@@ -1,8 +1,8 @@
-start project:
+### start project:
 ```bash
 django-admin startproject <project-name>
 ```
-Project structure:
+### Project structure:
 ```text
 <project-name>/
       ├── <project-name>/
@@ -13,12 +13,12 @@ Project structure:
       │         └── wsgi.py            # WSGI configuration for traditional servers.
       └── manage.py                    # Command-line tool for managing the project.
 ```
-run project:
+### run project:
 ```bash
 python manage.py runserver
 ```
 #
-MVT (Model-View-Template):
+### MVT (Model-View-Template):
 
 ![django-mvt-based-control-flow](https://github.com/user-attachments/assets/f09e8b74-7fc8-434f-97f6-59d550ae192b)
 
@@ -26,3 +26,18 @@ MVT (Model-View-Template):
 * **View** : Handles request processing and business logic.
 * **Template** : Renders HTML output with data provided by the View.
 #
+### migrations:
+After creating or changing models:
+```bash
+python manage.py makemigrations
+```
+To apply those changes:
+```bash
+python manage.py migrate
+```
+**Note:** On first setup, `python manage.py migrate` creates default tables for built-in apps like authentication and admin.
+### Create Super User:
+Create a superuser for access to the site's admin panel (`http://<yourdomain>/admin/`) :
+```bash
+python manage.py createsuperuser
+```
