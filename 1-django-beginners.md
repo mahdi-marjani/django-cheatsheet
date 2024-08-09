@@ -36,7 +36,7 @@ To apply those changes:
 python manage.py migrate
 ```
 **Note:** On first setup, `python manage.py migrate` creates default tables for built-in apps like authentication and admin.
-### Create Super User:
+### create super user:
 Create a superuser for access to the site's admin panel (`http://<yourdomain>/admin/`) :
 ```bash
 python manage.py createsuperuser
@@ -67,7 +67,7 @@ python manage.py startapp <app-name>
       │         └── urls.py (optional)       # Optional: Defines URL routing for the app.
       └── manage.py                          # Command-line tool for managing the project.
 ```
-### Connecting the app to the project:
+### connecting the app to the project:
 &lt;project-name&gt;/&lt;project-name&gt;/settings.py:
 ```python
 INSTALLED_APPS = [
@@ -104,7 +104,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('home.urls')),
+    path('', include('your_app_name.urls')),
 ]
 ```
 Now, if you send a request to `http://<yourdomain>/hello/`, you will receive **"Hello World"** in the response.
@@ -149,7 +149,7 @@ For example, create an HTML file named `hello-world.html` in the `templates` fol
       │         └── hello-world.html         # A sample template
       └── manage.py                          # Command-line tool for managing the project.
 ```
-### Connecting the templates to the project:
+### connecting the templates to the project:
 &lt;project-name&gt;/&lt;project-name&gt;/settings.py:
 ```python
 TEMPLATES = [
@@ -179,3 +179,4 @@ def hello_world(request):
     return render(request, 'hello-world.html')
 ```
 #
+### pass a value to the template:
