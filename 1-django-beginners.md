@@ -109,3 +109,72 @@ urlpatterns = [
 ```
 Now, if you send a request to `http://<yourdomain>/hello/`, you will receive **"Hello World"** in the response.
 #
+### create template:
+Create a `templates` folder in the `<project-name>` folder
+
+For example, create an HTML file named `hello-world.html` in the `templates` folder with this content:
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello World</title>
+  </head>
+  <body>
+    <h3>Hello World</h3>
+  </body>
+</html>
+```
+### project structure (with template) :
+```text
+<project-name>/
+      ├── <project-name>/
+      │         ├── __init__.py              # Marks this directory as a Python package.
+      │         ├── asgi.py                  # ASGI configuration for async servers.
+      │         ├── settings.py              # Project settings and configuration.
+      │         ├── urls.py                  # URL routing for the project.
+      │         └── wsgi.py                  # WSGI configuration for traditional servers.
+      ├── <app-name>/
+      │         ├── migrations/
+      │         │        └── __init__.py     # Marks this directory as a Python package.
+      │         ├── __init__.py              # Marks this directory as a Python package.
+      │         ├── admin.py                 # Admin panel configurations.
+      │         ├── apps.py                  # App configuration.
+      │         ├── models.py                # Defines the data models (database structure).
+      │         ├── tests.py                 # Tests for the app.
+      │         ├── views.py                 # View functions for handling requests.
+      │         └── urls.py (optional)       # Optional: Defines URL routing for the app.
+      ├── templates/
+      │         └── hello-world.html         # A sample template
+      └── manage.py                          # Command-line tool for managing the project.
+```
+### Connecting the templates to the project:
+&lt;project-name&gt;/&lt;project-name&gt;/settings.py:
+```python
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            BASE_DIR / 'templates'            # Add your templates folder here
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+```
+### use a template:
+&lt;project-name&gt;/&lt;app-name&gt;/views.py:
+```python
+from django.shortcuts import render
+
+def hello_world(request):
+    return render(request, 'hello-world.html')
+```
