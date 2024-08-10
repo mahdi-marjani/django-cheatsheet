@@ -247,3 +247,43 @@ Run `python manage.py makemigrations` and `python manage.py migrate`
       └── manage.py                               # Command-line tool for managing the project.
 ```
 #
+### Add model to the admin panel:
+&lt;project-name&gt;/&lt;app-name&gt;/admin.py:
+```python
+from django.contrib import admin
+from .models import Todo            # model name
+
+admin.site.register(Todo)
+```
+### reading from models
+&lt;project-name&gt;/templates/todo_list.html:
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Todo List</title>
+  </head>
+  <body>
+    <h1>Todo List</h1>
+    <ul>
+      {% for todo in todos %}
+        <li>
+            {{ todo.title }} - {{ todo.body }} - {{ todo.created_at }}
+        </li>
+      {% empty %}
+        <li>No todos found.</li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
+```
+&lt;project-name&gt;/&lt;app-name&gt;/views.py:
+```python
+from django.shortcuts import render
+from .models import Todo                  # model name
+
+def show_todos(request):
+    todos = Todo.objects.all()
+    return render(request, 'todo_list.html', {'todos': todos})
+```
+#
