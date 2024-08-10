@@ -287,3 +287,49 @@ def show_todos(request):
     return render(request, 'todo_list.html', {'todos': todos})
 ```
 #
+### extend templates:
+&lt;project-name&gt;/templates/base.html:
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Default Title{% endblock %}</title>
+</head>
+
+<body>
+    {% block content %}{% endblock %}
+</body>
+
+</html>
+```
+&lt;project-name&gt;/templates/home.html:
+```html
+{% extends "base.html" %}
+
+{% block title %}
+  Home
+{% endblock %}
+
+{% block content %}
+  <h2>Welcome to the Home Page!</h2>
+{% endblock %}
+```
+When `home.html` renders in the browser, the final output will be:
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Home</title>                     <!-- Title from home.html -->
+</head>
+
+<body>
+    <h2>Welcome to the Home Page!</h2>      <!-- Content from home.html -->
+</body>
+
+</html>
+```
+#
