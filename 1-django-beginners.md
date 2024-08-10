@@ -6,7 +6,7 @@ django-admin startproject <project-name>
 ```text
 <project-name>/
       ├── <project-name>/
-      │         ├── __init__.py        # Marks this directory as a Python package.
+      │         ├── __init__.py
       │         ├── asgi.py            # ASGI configuration for async servers.
       │         ├── settings.py        # Project settings and configuration.
       │         ├── urls.py            # URL routing for the project.
@@ -50,15 +50,15 @@ python manage.py startapp <app-name>
 ```text
 <project-name>/
       ├── <project-name>/
-      │         ├── __init__.py              # Marks this directory as a Python package.
+      │         ├── __init__.py
       │         ├── asgi.py                  # ASGI configuration for async servers.
       │         ├── settings.py              # Project settings and configuration.
       │         ├── urls.py                  # URL routing for the project.
       │         └── wsgi.py                  # WSGI configuration for traditional servers.
       ├── <app-name>/
       │         ├── migrations/
-      │         │        └── __init__.py     # Marks this directory as a Python package.
-      │         ├── __init__.py              # Marks this directory as a Python package.
+      │         │        └── __init__.py
+      │         ├── __init__.py
       │         ├── admin.py                 # Admin panel configurations.
       │         ├── apps.py                  # App configuration.
       │         ├── models.py                # Defines the data models (database structure).
@@ -130,15 +130,15 @@ For example, create an HTML file named `hello-world.html` in the `templates` fol
 ```text
 <project-name>/
       ├── <project-name>/
-      │         ├── __init__.py              # Marks this directory as a Python package.
+      │         ├── __init__.py
       │         ├── asgi.py                  # ASGI configuration for async servers.
       │         ├── settings.py              # Project settings and configuration.
       │         ├── urls.py                  # URL routing for the project.
       │         └── wsgi.py                  # WSGI configuration for traditional servers.
       ├── <app-name>/
       │         ├── migrations/
-      │         │        └── __init__.py     # Marks this directory as a Python package.
-      │         ├── __init__.py              # Marks this directory as a Python package.
+      │         │        └── __init__.py
+      │         ├── __init__.py
       │         ├── admin.py                 # Admin panel configurations.
       │         ├── apps.py                  # App configuration.
       │         ├── models.py                # Defines the data models (database structure).
@@ -208,4 +208,42 @@ If the name is **"admin,"** it says **"you are admin."** If not, it just says **
 <h3>Hello {{ name|upper }}</h3>
 ```
 The name will be displayed in uppercase
+#
+### models:
+&lt;project-name&gt;/&lt;app-name&gt;/models.py:
+```python
+from django.db import models
+
+class Todo(models.Model):
+    title = models.CharField(max_length=100)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed = models.BooleanField(default=False)
+```
+Run `python manage.py makemigrations` and `python manage.py migrate`
+### project structure (with models) :
+```text
+<project-name>/
+      ├── <project-name>/
+      │         ├── __init__.py
+      │         ├── asgi.py                       # ASGI configuration for async servers.
+      │         ├── settings.py                   # Project settings and configuration.
+      │         ├── urls.py                       # URL routing for the project.
+      │         └── wsgi.py                       # WSGI configuration for traditional servers.
+      ├── <app-name>/
+      │         ├── migrations/
+      │         │        ├── __init__.py
+      │         │        └── 0001_initial.py      # Creates initial database tables.
+      │         ├── __init__.py
+      │         ├── admin.py                      # Admin panel configurations.
+      │         ├── apps.py                       # App configuration.
+      │         ├── models.py                     # Defines the data models (database structure).
+      │         ├── tests.py                      # Tests for the app.
+      │         ├── views.py                      # View functions for handling requests.
+      │         └── urls.py (optional)            # Optional: Defines URL routing for the app.
+      ├── templates/
+      │         └── hello-world.html              # A sample template
+      ├── db.sqlite3                              # Django's default database.
+      └── manage.py                               # Command-line tool for managing the project.
+```
 #
