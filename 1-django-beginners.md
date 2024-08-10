@@ -180,3 +180,32 @@ def hello_world(request):
 ```
 #
 ### pass a value to the template:
+&lt;project-name&gt;/templates/say-hello.html:
+```html
+<h3>Hello {{ name }}</h3>
+```
+&lt;project-name&gt;/&lt;app-name&gt;/views.py:
+```python
+from django.shortcuts import render
+
+def say_hello(request):
+    return render(request, 'say-hello.html', {'name': 'mahdi'})
+```
+Now, if you send a request to this view, you will receive **Hello mahdi** in the response.
+### if and else in the template:
+&lt;project-name&gt;/templates/say-hello.html:
+```html
+{% if name == "admin" %}
+      <p>you are admin</p>
+{% else %}
+      <h3>Hello {{ name }}</h3>
+{% endif %}
+```
+If the name is **"admin,"** it says **"you are admin."** If not, it just says **"Hello {{ name }}"**
+### template filter - upper:
+&lt;project-name&gt;/templates/say-hello.html:
+```html
+<h3>Hello {{ name|upper }}</h3>
+```
+The name will be displayed in uppercase
+#
