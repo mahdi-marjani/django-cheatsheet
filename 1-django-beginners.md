@@ -403,13 +403,29 @@ Request URL: `http://<yourdomain>/number/42/`
 Response: `The number is 42`
 #
 ### url Name:
-Define URL Name:
+**Define URL Name:**
 ```python
 path('long-url-path-that-might-change/', views.some_view, name='some_name'),
 ```
-Use URL Name in Templates:
+
+<br />
+<br />
+
+**Use URL Name in Templates:**
 ```html
 <a href="{% url 'some_name' %}">Go to Some Path</a>
 ```
 Result: `{% url 'some_name' %}` generates the URL `http://<yourdomain>/long-url-path-that-might-change/`
+
+<br />
+<br />
+
+**Use URL Name in Views for Redirects:**
+```python
+from django.shortcuts import redirect
+
+def some_other_view(request):
+    return redirect('some_name')
+```
+Result: `redirect('some_name')` sends the user to the URL named `some_name`
 #
