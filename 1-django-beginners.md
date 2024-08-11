@@ -438,10 +438,10 @@ Delete a Todo Object:
 
 ```python
 from django.shortcuts import redirect
-from .models import Todo
+from .models import Todo                        # target model
 
 def delete_todo(request, todo_id):
-    todo = Todo.objects.get(id=todo_id)
+    todo = Todo.objects.get(id=todo_id)         # target object
     todo.delete()
     return redirect('todo_list')
 ```
