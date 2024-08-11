@@ -333,3 +333,49 @@ When `home.html` renders in the browser, the final output will be:
 </html>
 ```
 #
+### template tag - include:
+&lt;project-name&gt;/templates/header.html:
+```html
+<header>
+    <h1>My Website</h1>
+</header>
+```
+&lt;project-name&gt;/templates/header.html:
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Home</title>
+</head>
+
+<body>
+    {% include "header.html" %}                  <!-- Header is included from header.html -->
+
+    <h2>Welcome to the Home Page!</h2>
+</body>
+
+</html>
+```
+When `home.html` renders in the browser, the final output will be:
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Home</title>
+</head>
+
+<body>
+    <header>                                 <!-- Content from header.html -->
+        <h1>My Website</h1>                  <!-- Content from header.html -->
+    </header>                                <!-- Content from header.html -->
+
+    <h2>Welcome to the Home Page!</h2>
+</body>
+
+</html>
+```
+#
