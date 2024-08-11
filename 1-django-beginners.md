@@ -446,3 +446,25 @@ def delete_todo(request, todo_id):
     return redirect('todo_list')
 ```
 #
+### display messages to user:
+Add a message in your view:
+```python
+from django.contrib import messages
+from django.shortcuts import redirect
+from .models import Todo
+
+def delete_todo(request, todo_id):
+    todo = Todo.objects.get(id=todo_id)
+    todo.delete()
+    messages.success(request, 'Todo deleted successfully!', extra_tags='alert-success')      # messages
+    return redirect('todo_list')
+```
+Display the message in a template:
+```html
+{% if messages %}
+  {% for message in messages %}
+    <div class="{{ message.extra_tags }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+```
+#
