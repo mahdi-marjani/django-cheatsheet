@@ -340,7 +340,7 @@ When `home.html` renders in the browser, the final output will be:
     <h1>My Website</h1>
 </header>
 ```
-&lt;project-name&gt;/templates/header.html:
+&lt;project-name&gt;/templates/home.html:
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -378,4 +378,27 @@ When `home.html` renders in the browser, the final output will be:
 
 </html>
 ```
+#
+### extract value from url:
+&lt;project-name&gt;/&lt;app-name&gt;/urls.py:
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('number/<int:number_val>/', views.handle_number),
+]
+```
+&lt;project-name&gt;/&lt;app-name&gt;/views.py:
+```python
+from django.http import HttpResponse
+
+def handle_number(request, number_val):
+    return HttpResponse(f'The number is {number_val}')
+```
+**Example:**
+
+Request URL: `http://<yourdomain>/number/42/`
+
+Response: `The number is 42`
 #
