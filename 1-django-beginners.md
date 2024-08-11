@@ -402,3 +402,14 @@ Request URL: `http://<yourdomain>/number/42/`
 
 Response: `The number is 42`
 #
+### url Name:
+Define URL Name:
+```python
+path('long-url-path-that-might-change/', views.some_view, name='some_name'),
+```
+Use URL Name in Templates:
+```html
+<a href="{% url 'some_name' %}">Go to Some Path</a>
+```
+Result: `{% url 'some_name' %}` generates the URL `http://<yourdomain>/long-url-path-that-might-change/`
+#
