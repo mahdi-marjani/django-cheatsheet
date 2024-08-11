@@ -429,3 +429,20 @@ def some_other_view(request):
 ```
 Result: `redirect('some_name')` sends the user to the URL named `some_name`
 #
+### delete an object from a model:
+Example:
+
+Delete a Todo Object:
+
+&lt;project-name&gt;/&lt;app-name&gt;/views.py:
+
+```python
+from django.shortcuts import redirect
+from .models import Todo
+
+def delete_todo(request, todo_id):
+    todo = Todo.objects.get(id=todo_id)
+    todo.delete()
+    return redirect('todo_list')
+```
+#
