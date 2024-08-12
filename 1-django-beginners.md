@@ -446,7 +446,7 @@ def delete_todo(request, todo_id):
     return redirect('todo_list')
 ```
 #
-### display messages to user:
+### show messages to user:
 Add a message in your view:
 ```python
 from django.contrib import messages
@@ -459,7 +459,7 @@ def delete_todo(request, todo_id):
     messages.success(request, 'Todo deleted successfully!', extra_tags='alert-success')      # messages
     return redirect('todo_list')
 ```
-Display the message in a template:
+Show the message in the redirected template:
 ```html
 {% if messages %}
   {% for message in messages %}
