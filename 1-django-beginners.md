@@ -468,3 +468,55 @@ Show the message in the redirected template:
 {% endif %}
 ```
 #
+### create a form:
+&lt;project-name&gt;/&lt;app-name&gt;/forms.py:
+```python
+from django import forms
+
+class SimpleForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    email = forms.EmailField()
+```
+&lt;project-name&gt;/&lt;app-name&gt;/views.py:
+```python
+from django.shortcuts import render
+from .forms import SimpleForm
+
+def show_form(request):
+    form = SimpleForm()
+    return render(request, 'form_template.html', {'form': form})
+```
+template:
+```html
+<form method="post">
+    {{ form }}
+    <button type="submit">Submit</button>
+</form>
+```
+### project structure (with form) :
+```text
+<project-name>/
+      ├── <project-name>/
+      │         ├── __init__.py
+      │         ├── asgi.py                       # ASGI configuration for async servers.
+      │         ├── settings.py                   # Project settings and configuration.
+      │         ├── urls.py                       # URL routing for the project.
+      │         └── wsgi.py                       # WSGI configuration for traditional servers.
+      ├── <app-name>/
+      │         ├── migrations/
+      │         │        ├── __init__.py
+      │         │        └── 0001_initial.py      # Creates initial database tables.
+      │         ├── __init__.py
+      │         ├── admin.py                      # Admin panel configurations.
+      │         ├── apps.py                       # App configuration.
+      │         ├── forms.py                      # Django forms.
+      │         ├── models.py                     # Defines the data models (database structure).
+      │         ├── tests.py                      # Tests for the app.
+      │         ├── views.py                      # View functions for handling requests.
+      │         └── urls.py (optional)            # Optional: Defines URL routing for the app.
+      ├── templates/
+      │         └── hello-world.html              # A sample template
+      ├── db.sqlite3                              # Django's default database.
+      └── manage.py                               # Command-line tool for managing the project.
+```
+#
