@@ -480,16 +480,16 @@ class SimpleForm(forms.Form):
 &lt;project-name&gt;/&lt;app-name&gt;/views.py:
 ```python
 from django.shortcuts import render
-from .forms import SimpleForm
+from .forms import SimpleForm                                         # target form
 
 def show_form(request):
     form = SimpleForm()
-    return render(request, 'form_template.html', {'form': form})
+    return render(request, 'form_template.html', {'form': form})      # Send the form to the template
 ```
 template:
 ```html
 <form method="post">
-    {{ form }}
+    {{ form }}                                    <!-- use form in template -->
     <button type="submit">Submit</button>
 </form>
 ```
