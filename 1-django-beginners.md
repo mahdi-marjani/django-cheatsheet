@@ -488,9 +488,9 @@ def show_form(request):
 ```
 template:
 ```html
-<form method="post">
+<form>
     {{ form }}                                    <!-- use form in template -->
-    <button type="submit">Submit</button>
+    <input type="submit" value="Submit">
 </form>
 ```
 ### project structure (with form) :
