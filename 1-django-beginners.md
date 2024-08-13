@@ -247,7 +247,7 @@ Run `python manage.py makemigrations` and `python manage.py migrate`
       └── manage.py                               # Command-line tool for managing the project.
 ```
 #
-### Add model to the admin panel:
+### add model to the admin panel:
 &lt;project-name&gt;/&lt;app-name&gt;/admin.py:
 ```python
 from django.contrib import admin
@@ -402,7 +402,7 @@ Request URL: `http://<yourdomain>/number/42/`
 
 Response: `The number is 42`
 #
-### url Name:
+### url name:
 **Define URL Name:**
 ```python
 path('long-url-path-that-might-change/', views.some_view, name='some_name'),
@@ -489,7 +489,7 @@ def show_form(request):
 template:
 ```html
 <form>
-    {{ form }}                                    <!-- use form in template -->
+    {{ form }}                                    <!-- use form in template (Default: form.as_table) -->
     <input type="submit" value="Submit">
 </form>
 ```
