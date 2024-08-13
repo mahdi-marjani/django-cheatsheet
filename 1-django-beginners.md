@@ -521,3 +521,93 @@ template:
       └── manage.py                               # Command-line tool for managing the project.
 ```
 #
+### use a form to add an object to a model with POST method:
+&lt;project-name&gt;/&lt;app-name&gt;/models.py:
+```python
+from django.db import models
+
+# A sample model
+class Todo(models.Model):
+    title = models.CharField(max_length=100)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed = models.BooleanField(default=False)
+```
+&lt;project-name&gt;/templates/todo_list.html:
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Todo List</title>
+  <style>
+    .alert-success {
+      background-color: #3c763d;
+      color: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Todo List</h1>
+  {% if messages %}
+  {% for message in messages %}
+  <div class="{{ message.extra_tags }}">{{ message }}</div>
+  {% endfor %}
+  {% endif %}
+  <ul>
+    {% for todo in todos %}
+    <li>{{ todo.id }} - {{ todo.title }} - {{ todo.body }} - {{ todo.created_at }}</li>
+    {% empty %}
+    <li>No todos found.</li>
+    {% endfor %}
+  </ul>
+</body>
+
+</html>
+```
+&lt;project-name&gt;/&lt;app-name&gt;/forms.py:
+```python
+from django import forms
+
+class TodoCreateForm(forms.Form):
+    title = forms.CharField(label='title', max_length=100)
+    body = forms.CharField(label='body', widget=forms.Textarea)
+```
+&lt;project-name&gt;/templates/todo_create.html:
+```html
+<h1>Todo Create</h1>
+<form action="" method="post">                  <!-- Use the POST method -->
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Create">
+</form>
+```
+&lt;project-name&gt;/&lt;app-name&gt;/views.py:
+```python
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Todo
+from .forms import TodoCreateForm
+
+def todo_create(request):
+    if request.method == 'POST':
+        form = TodoCreateForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            Todo.objects.create(title=data['title'], body=data['body'])
+            messages.success(request, 'Todo created successfully!', extra_tags='alert-success')
+            return redirect('todo_list')
+    else:
+        form = TodoCreateForm()
+
+    return render(request, 'todo_create.html', {'form': form})
+
+def show_todos(request):
+    todos = Todo.objects.all()
+    return render(request, 'todo_list.html', {'todos': todos})
+```
+#
