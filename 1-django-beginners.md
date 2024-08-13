@@ -489,6 +489,7 @@ def show_form(request):
 template:
 ```html
 <form>
+    {% csrf_token %}                              <!-- Stops fake form submissions -->
     {{ form }}                                    <!-- use form in template (Default: form.as_table) -->
     <input type="submit" value="Submit">
 </form>
