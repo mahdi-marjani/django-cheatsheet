@@ -214,7 +214,7 @@ The name will be displayed in uppercase
 ```python
 from django.db import models
 
-class Todo(models.Model):
+class Todo(models.Model):                                    # A sample model
     title = models.CharField(max_length=100)
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -473,7 +473,7 @@ Show the message in the redirected template:
 ```python
 from django import forms
 
-class SimpleForm(forms.Form):
+class SimpleForm(forms.Form):                  # A sample form
     name = forms.CharField(max_length=100)
     email = forms.EmailField()
 ```
@@ -526,8 +526,7 @@ template:
 ```python
 from django.db import models
 
-# A sample model
-class Todo(models.Model):
+class Todo(models.Model):                                    # A sample model
     title = models.CharField(max_length=100)
     body = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -537,7 +536,7 @@ class Todo(models.Model):
 ```python
 from django import forms
 
-class TodoCreateForm(forms.Form):
+class TodoCreateForm(forms.Form):                                    # A simple form suitable for the Todo model
     title = forms.CharField(label='title', max_length=100)
     body = forms.CharField(label='body', widget=forms.Textarea)
 ```
@@ -569,5 +568,27 @@ def todo_create(request):
         form = TodoCreateForm()
 
     return render(request, 'todo_create.html', {'form': form})
+```
+#
+### model form
+&lt;project-name&gt;/&lt;app-name&gt;/models.py:
+```python
+from django.db import models
+
+class Todo(models.Model):                                    # A sample model
+    title = models.CharField(max_length=100)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed = models.BooleanField(default=False)
+```
+&lt;project-name&gt;/&lt;app-name&gt;/forms.py:
+```python
+from django.forms import ModelForm
+from .models import Todo
+
+class TodoCreateForm(ModelForm):            # A sample model form suitable for the Todo model
+    class Meta:
+        model = Todo
+        fields = ['title', 'body']
 ```
 #
