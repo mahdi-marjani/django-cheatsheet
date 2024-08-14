@@ -14,11 +14,11 @@
 - [connect templates to project](#connect-templates-to-project)
 - [use template](#use-template)
 - [pass value to template](#pass-value-to-template)
-- [if and else in the template](#if-and-else-in-the-template)
+- [if and else in template](#if-and-else-in-the-template)
 - [template filter - upper](#template-filter---upper)
 - [models](#models)
 - [project structure (with models)](#project-structure-with-models-)
-- [add model to the admin panel](#add-model-to-the-admin-panel)
+- [add model to admin panel](#add-model-to-admin-panel)
 - [reading from models](#reading-from-models)
 - [extend template](#extend-template)
 - [template tag - include](#template-tag---include)
@@ -45,9 +45,9 @@ django-admin startproject <project-name>
       │         ├── __init__.py
       │         ├── asgi.py            # ASGI configuration for async servers.
       │         ├── settings.py        # Project settings and configuration.
-      │         ├── urls.py            # URL routing for the project.
+      │         ├── urls.py            # URL routing for project.
       │         └── wsgi.py            # WSGI configuration for traditional servers.
-      └── manage.py                    # Command-line tool for managing the project.
+      └── manage.py                    # Command-line tool for managing project.
 ```
 ### run project:
 ```bash
@@ -58,7 +58,7 @@ python manage.py runserver
 
 ![django-mvt-based-control-flow](https://github.com/user-attachments/assets/f09e8b74-7fc8-434f-97f6-59d550ae192b)
 
-* **Model** : Defines and manages the data structure and database interaction.
+* **Model** : Defines and manages data structure and database interaction.
 * **View** : Handles request processing and business logic.
 * **Template** : Renders HTML output with data provided by the View.
 #
@@ -73,7 +73,7 @@ python manage.py migrate
 ```
 **Note:** On first setup, `python manage.py migrate` creates default tables for built-in apps like authentication and admin.
 ### create super user:
-Create a superuser for access to the site's admin panel (`http://<yourdomain>/admin/`) :
+Create a superuser for access to site's admin panel (`http://<yourdomain>/admin/`) :
 ```bash
 python manage.py createsuperuser
 ```
@@ -89,7 +89,7 @@ python manage.py startapp <app-name>
       │         ├── __init__.py
       │         ├── asgi.py                  # ASGI configuration for async servers.
       │         ├── settings.py              # Project settings and configuration.
-      │         ├── urls.py                  # URL routing for the project.
+      │         ├── urls.py                  # URL routing for project.
       │         └── wsgi.py                  # WSGI configuration for traditional servers.
       ├── <app-name>/
       │         ├── migrations/
@@ -97,11 +97,11 @@ python manage.py startapp <app-name>
       │         ├── __init__.py
       │         ├── admin.py                 # Admin panel configurations.
       │         ├── apps.py                  # App configuration.
-      │         ├── models.py                # Defines the data models (database structure).
-      │         ├── tests.py                 # Tests for the app.
+      │         ├── models.py                # Defines data models (database structure).
+      │         ├── tests.py                 # Tests for app.
       │         ├── views.py                 # View functions for handling requests.
-      │         └── urls.py (optional)       # Optional: Defines URL routing for the app.
-      └── manage.py                          # Command-line tool for managing the project.
+      │         └── urls.py (optional)       # Optional: Defines URL routing for app.
+      └── manage.py                          # Command-line tool for managing project.
 ```
 ### connect app to project:
 &lt;project-name&gt;/&lt;project-name&gt;/settings.py:
@@ -143,7 +143,7 @@ urlpatterns = [
     path('', include('your_app_name.urls')),
 ]
 ```
-Now, if you send a request to `http://<yourdomain>/hello/`, you will receive **"Hello World"** in the response.
+Now, if you send a request to `http://<yourdomain>/hello/`, you will receive **"Hello World"** in response.
 #
 ### create template:
 Create a `templates` folder in the `<project-name>` folder
@@ -169,7 +169,7 @@ For example, create an HTML file named `hello-world.html` in the `templates` fol
       │         ├── __init__.py
       │         ├── asgi.py                  # ASGI configuration for async servers.
       │         ├── settings.py              # Project settings and configuration.
-      │         ├── urls.py                  # URL routing for the project.
+      │         ├── urls.py                  # URL routing for project.
       │         └── wsgi.py                  # WSGI configuration for traditional servers.
       ├── <app-name>/
       │         ├── migrations/
@@ -177,13 +177,13 @@ For example, create an HTML file named `hello-world.html` in the `templates` fol
       │         ├── __init__.py
       │         ├── admin.py                 # Admin panel configurations.
       │         ├── apps.py                  # App configuration.
-      │         ├── models.py                # Defines the data models (database structure).
-      │         ├── tests.py                 # Tests for the app.
+      │         ├── models.py                # Defines data models (database structure).
+      │         ├── tests.py                 # Tests for app.
       │         ├── views.py                 # View functions for handling requests.
-      │         └── urls.py (optional)       # Optional: Defines URL routing for the app.
+      │         └── urls.py (optional)       # Optional: Defines URL routing for app.
       ├── templates/
       │         └── hello-world.html         # A sample template
-      └── manage.py                          # Command-line tool for managing the project.
+      └── manage.py                          # Command-line tool for managing project.
 ```
 ### connect templates to project:
 &lt;project-name&gt;/&lt;project-name&gt;/settings.py:
@@ -227,8 +227,8 @@ from django.shortcuts import render
 def say_hello(request):
     return render(request, 'say-hello.html', {'name': 'mahdi'})
 ```
-Now, if you send a request to this view, you will receive **Hello mahdi** in the response.
-### if and else in the template:
+Now, if you send a request to this view, you will receive **Hello mahdi** in response.
+### if and else in template:
 &lt;project-name&gt;/templates/say-hello.html:
 ```html
 {% if name == "admin" %}
@@ -243,7 +243,7 @@ If the name is **"admin,"** it says **"you are admin."** If not, it just says **
 ```html
 <h3>Hello {{ name|upper }}</h3>
 ```
-The name will be displayed in uppercase
+name will be displayed in uppercase
 #
 ### models:
 &lt;project-name&gt;/&lt;app-name&gt;/models.py:
@@ -264,7 +264,7 @@ Run `python manage.py makemigrations` and `python manage.py migrate`
       │         ├── __init__.py
       │         ├── asgi.py                       # ASGI configuration for async servers.
       │         ├── settings.py                   # Project settings and configuration.
-      │         ├── urls.py                       # URL routing for the project.
+      │         ├── urls.py                       # URL routing for project.
       │         └── wsgi.py                       # WSGI configuration for traditional servers.
       ├── <app-name>/
       │         ├── migrations/
@@ -273,17 +273,17 @@ Run `python manage.py makemigrations` and `python manage.py migrate`
       │         ├── __init__.py
       │         ├── admin.py                      # Admin panel configurations.
       │         ├── apps.py                       # App configuration.
-      │         ├── models.py                     # Defines the data models (database structure).
-      │         ├── tests.py                      # Tests for the app.
+      │         ├── models.py                     # Defines data models (database structure).
+      │         ├── tests.py                      # Tests for app.
       │         ├── views.py                      # View functions for handling requests.
-      │         └── urls.py (optional)            # Optional: Defines URL routing for the app.
+      │         └── urls.py (optional)            # Optional: Defines URL routing for app.
       ├── templates/
       │         └── hello-world.html              # A sample template
       ├── db.sqlite3                              # Django's default database.
-      └── manage.py                               # Command-line tool for managing the project.
+      └── manage.py                               # Command-line tool for managing project.
 ```
 #
-### add model to the admin panel:
+### add model to admin panel:
 &lt;project-name&gt;/&lt;app-name&gt;/admin.py:
 ```python
 from django.contrib import admin
@@ -352,7 +352,7 @@ def show_todos(request):
   <h2>Welcome to the Home Page!</h2>
 {% endblock %}
 ```
-When `home.html` renders in the browser, the final output will be:
+When `home.html` renders in browser, final output will be:
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -394,7 +394,7 @@ When `home.html` renders in the browser, the final output will be:
 
 </html>
 ```
-When `home.html` renders in the browser, the final output will be:
+When `home.html` renders in browser, final output will be:
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -451,7 +451,7 @@ path('long-url-path-that-might-change/', views.some_view, name='some_name'),
 ```html
 <a href="{% url 'some_name' %}">Go to Some Path</a>
 ```
-Result: `{% url 'some_name' %}` generates the URL `http://<yourdomain>/long-url-path-that-might-change/`
+Result: `{% url 'some_name' %}` generates URL `http://<yourdomain>/long-url-path-that-might-change/`
 
 <br />
 <br />
@@ -463,7 +463,7 @@ from django.shortcuts import redirect
 def some_other_view(request):
     return redirect('some_name')
 ```
-Result: `redirect('some_name')` sends the user to the URL named `some_name`
+Result: `redirect('some_name')` sends the user to URL named `some_name`
 #
 ### delete an object from a model:
 Example:
@@ -495,7 +495,7 @@ def delete_todo(request, todo_id):
     messages.success(request, 'Todo deleted successfully!', extra_tags='alert-success')      # messages
     return redirect('todo_list')
 ```
-Show the message in the redirected template:
+Show the message in redirected template:
 ```html
 {% if messages %}
   {% for message in messages %}
@@ -537,7 +537,7 @@ template:
       │         ├── __init__.py
       │         ├── asgi.py                       # ASGI configuration for async servers.
       │         ├── settings.py                   # Project settings and configuration.
-      │         ├── urls.py                       # URL routing for the project.
+      │         ├── urls.py                       # URL routing for project.
       │         └── wsgi.py                       # WSGI configuration for traditional servers.
       ├── <app-name>/
       │         ├── migrations/
@@ -547,14 +547,14 @@ template:
       │         ├── admin.py                      # Admin panel configurations.
       │         ├── apps.py                       # App configuration.
       │         ├── forms.py                      # Django forms.
-      │         ├── models.py                     # Defines the data models (database structure).
-      │         ├── tests.py                      # Tests for the app.
+      │         ├── models.py                     # Defines data models (database structure).
+      │         ├── tests.py                      # Tests for app.
       │         ├── views.py                      # View functions for handling requests.
-      │         └── urls.py (optional)            # Optional: Defines URL routing for the app.
+      │         └── urls.py (optional)            # Optional: Defines URL routing for app.
       ├── templates/
       │         └── hello-world.html              # A sample template
       ├── db.sqlite3                              # Django's default database.
-      └── manage.py                               # Command-line tool for managing the project.
+      └── manage.py                               # Command-line tool for managing project.
 ```
 #
 ### add object to model via form (POST) :
@@ -572,7 +572,7 @@ class Todo(models.Model):                                    # A sample model
 ```python
 from django import forms
 
-class TodoCreateForm(forms.Form):                                    # A simple form suitable for the Todo model
+class TodoCreateForm(forms.Form):                                    # A simple form suitable for Todo model
     title = forms.CharField(label='title', max_length=100)
     body = forms.CharField(label='body', widget=forms.Textarea)
 ```
@@ -622,7 +622,7 @@ class Todo(models.Model):                                    # A sample model
 from django.forms import ModelForm
 from .models import Todo
 
-class TodoCreateForm(ModelForm):            # A sample model form suitable for the Todo model
+class TodoCreateForm(ModelForm):            # A sample model form suitable for Todo model
     class Meta:
         model = Todo
         fields = ['title', 'body']
