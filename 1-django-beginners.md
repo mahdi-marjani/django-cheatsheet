@@ -14,7 +14,7 @@
 - [connect templates to project](#connect-templates-to-project)
 - [use template](#use-template)
 - [pass value to template](#pass-value-to-template)
-- [if and else in template](#if-and-else-in-the-template)
+- [if and else in template](#if-and-else-in-template)
 - [template filter - upper](#template-filter---upper)
 - [models](#models)
 - [project structure (with models)](#project-structure-with-models-)
@@ -60,7 +60,7 @@ python manage.py runserver
 
 * **Model** : Defines and manages data structure and database interaction.
 * **View** : Handles request processing and business logic.
-* **Template** : Renders HTML output with data provided by the View.
+* **Template** : Renders HTML output with data provided by View.
 #
 ### migrations:
 After creating or changing models:
@@ -463,7 +463,7 @@ from django.shortcuts import redirect
 def some_other_view(request):
     return redirect('some_name')
 ```
-Result: `redirect('some_name')` sends the user to URL named `some_name`
+Result: `redirect('some_name')` sends user to URL named `some_name`
 #
 ### delete an object from a model:
 Example:
