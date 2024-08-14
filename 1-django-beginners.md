@@ -521,7 +521,7 @@ template:
       └── manage.py                               # Command-line tool for managing the project.
 ```
 #
-### use a form to add an object to a model with POST method:
+### add object to model via form (POST) :
 &lt;project-name&gt;/&lt;app-name&gt;/models.py:
 ```python
 from django.db import models
