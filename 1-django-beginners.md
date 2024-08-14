@@ -1,14 +1,24 @@
 ## Index
 - [start project](#start-project)
-
-<ul>
-    <li><a href="#start-project">start project</a></li>
-    <li><a href="#project-structure">project structure</a></li>
-    <li><a href="#run-project">run project</a></li>
-    <li><a href=""></a></li>
-    <li><a href=""></a></li>
-    <li><a href=""></a></li>
-</ul>
+- [project structure](#project-structure)
+- [run project](#run-project)
+- [MVT (Model-View-Template)](#mvt-model-view-template)
+- [migrations](#migrations)
+- [create super user](#create-super-user)
+- [create app](#create-app)
+- [project structure (with app)](#project-structure-with-app-)
+- [connect the app to the project](#connect-the-app-to-the-project)
+- [hello world (a simple view)](#hello-world-a-simple-view-)
+- [create template](#create-template)
+- [project structure (with template)](#project-structure-with-template-)
+- [connect the templates to the project](#connect-the-templates-to-the-project)
+- [use a template](#use-a-template)
+- [pass a value to the template](#pass-a-value-to-the-template)
+- [if and else in the template](#if-and-else-in-the-template)
+- []()
+- []()
+- []()
+- []()
 
 #
 
@@ -81,7 +91,7 @@ python manage.py startapp <app-name>
       │         └── urls.py (optional)       # Optional: Defines URL routing for the app.
       └── manage.py                          # Command-line tool for managing the project.
 ```
-### connecting the app to the project:
+### connect the app to the project:
 &lt;project-name&gt;/&lt;project-name&gt;/settings.py:
 ```python
 INSTALLED_APPS = [
@@ -163,7 +173,7 @@ For example, create an HTML file named `hello-world.html` in the `templates` fol
       │         └── hello-world.html         # A sample template
       └── manage.py                          # Command-line tool for managing the project.
 ```
-### connecting the templates to the project:
+### connect the templates to the project:
 &lt;project-name&gt;/&lt;project-name&gt;/settings.py:
 ```python
 TEMPLATES = [
