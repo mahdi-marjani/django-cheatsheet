@@ -15,7 +15,10 @@
 - [use a template](#use-a-template)
 - [pass a value to the template](#pass-a-value-to-the-template)
 - [if and else in the template](#if-and-else-in-the-template)
-- []()
+- [template filter - upper](#template-filter---upper)
+- [models](#models)
+- [project structure (with models)](#project-structure-with-models-)
+- [add model to the admin panel](#add-model-to-the-admin-panel)
 - []()
 - []()
 - []()
@@ -279,7 +282,7 @@ from .models import Todo            # model name
 
 admin.site.register(Todo)
 ```
-### reading from models
+### reading from models:
 &lt;project-name&gt;/templates/todo_list.html:
 ```html
 <!DOCTYPE html>
