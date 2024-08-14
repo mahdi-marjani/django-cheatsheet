@@ -143,7 +143,7 @@ urlpatterns = [
     path('', include('your_app_name.urls')),
 ]
 ```
-Now, if you send a request to `http://<yourdomain>/hello/`, you will receive **"Hello World"** in response.
+When you send a request to `http://<yourdomain>/hello/`, you will receive **"Hello World"** in response.
 #
 ### create template:
 Create a `templates` folder in the `<project-name>` folder
@@ -227,7 +227,7 @@ from django.shortcuts import render
 def say_hello(request):
     return render(request, 'say-hello.html', {'name': 'mahdi'})
 ```
-Now, if you send a request to this view, you will receive **Hello mahdi** in response.
+When you send a request to to this view, you will receive **Hello mahdi** in response.
 ### if and else in template:
 &lt;project-name&gt;/templates/say-hello.html:
 ```html
@@ -287,7 +287,7 @@ Run `python manage.py makemigrations` and `python manage.py migrate`
 &lt;project-name&gt;/&lt;app-name&gt;/admin.py:
 ```python
 from django.contrib import admin
-from .models import Todo            # model name
+from .models import Todo            # target model
 
 admin.site.register(Todo)
 ```
@@ -316,7 +316,7 @@ admin.site.register(Todo)
 &lt;project-name&gt;/&lt;app-name&gt;/views.py:
 ```python
 from django.shortcuts import render
-from .models import Todo                  # model name
+from .models import Todo                  # target model
 
 def show_todos(request):
     todos = Todo.objects.all()
