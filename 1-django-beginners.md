@@ -533,42 +533,6 @@ class Todo(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     completed = models.BooleanField(default=False)
 ```
-&lt;project-name&gt;/templates/todo_list.html:
-```html
-<!DOCTYPE html>
-<html>
-
-<head>
-  <title>Todo List</title>
-  <style>
-    .alert-success {
-      background-color: #3c763d;
-      color: #fff;
-      padding: 10px;
-      margin-bottom: 10px;
-      border-radius: 5px;
-    }
-  </style>
-</head>
-
-<body>
-  <h1>Todo List</h1>
-  {% if messages %}
-  {% for message in messages %}
-  <div class="{{ message.extra_tags }}">{{ message }}</div>
-  {% endfor %}
-  {% endif %}
-  <ul>
-    {% for todo in todos %}
-    <li>{{ todo.id }} - {{ todo.title }} - {{ todo.body }} - {{ todo.created_at }}</li>
-    {% empty %}
-    <li>No todos found.</li>
-    {% endfor %}
-  </ul>
-</body>
-
-</html>
-```
 &lt;project-name&gt;/&lt;app-name&gt;/forms.py:
 ```python
 from django import forms
@@ -605,9 +569,5 @@ def todo_create(request):
         form = TodoCreateForm()
 
     return render(request, 'todo_create.html', {'form': form})
-
-def show_todos(request):
-    todos = Todo.objects.all()
-    return render(request, 'todo_list.html', {'todos': todos})
 ```
 #
