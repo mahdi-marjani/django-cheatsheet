@@ -7,26 +7,26 @@
 - [create super user](#create-super-user)
 - [create app](#create-app)
 - [project structure (with app)](#project-structure-with-app-)
-- [connect the app to the project](#connect-the-app-to-the-project)
+- [connect app to project](#connect-app-to-project)
 - [hello world (a simple view)](#hello-world-a-simple-view-)
 - [create template](#create-template)
 - [project structure (with template)](#project-structure-with-template-)
-- [connect the templates to the project](#connect-the-templates-to-the-project)
-- [use a template](#use-a-template)
-- [pass a value to the template](#pass-a-value-to-the-template)
+- [connect templates to project](#connect-templates-to-project)
+- [use template](#use-template)
+- [pass value to template](#pass-value-to-template)
 - [if and else in the template](#if-and-else-in-the-template)
 - [template filter - upper](#template-filter---upper)
 - [models](#models)
 - [project structure (with models)](#project-structure-with-models-)
 - [add model to the admin panel](#add-model-to-the-admin-panel)
 - [reading from models](#reading-from-models)
-- [extend templates](#extend-templates)
+- [extend template](#extend-template)
 - [template tag - include](#template-tag---include)
 - [extract value from url](#extract-value-from-url)
 - [url name](#url-name)
 - [delete an object from a model](#delete-an-object-from-a-model)
 - [show messages to user](#show-messages-to-user)
-- [create a form](#create-a-form)
+- [create form](#create-form)
 - [project structure (with form)](#project-structure-with-form-)
 - [add object to model via form (POST)](#add-object-to-model-via-form-post-)
 - [model form](#model-form)
@@ -103,7 +103,7 @@ python manage.py startapp <app-name>
       │         └── urls.py (optional)       # Optional: Defines URL routing for the app.
       └── manage.py                          # Command-line tool for managing the project.
 ```
-### connect the app to the project:
+### connect app to project:
 &lt;project-name&gt;/&lt;project-name&gt;/settings.py:
 ```python
 INSTALLED_APPS = [
@@ -185,7 +185,7 @@ For example, create an HTML file named `hello-world.html` in the `templates` fol
       │         └── hello-world.html         # A sample template
       └── manage.py                          # Command-line tool for managing the project.
 ```
-### connect the templates to the project:
+### connect templates to project:
 &lt;project-name&gt;/&lt;project-name&gt;/settings.py:
 ```python
 TEMPLATES = [
@@ -206,7 +206,7 @@ TEMPLATES = [
     },
 ]
 ```
-### use a template:
+### use template:
 &lt;project-name&gt;/&lt;app-name&gt;/views.py:
 ```python
 from django.shortcuts import render
@@ -215,7 +215,7 @@ def hello_world(request):
     return render(request, 'hello-world.html')
 ```
 #
-### pass a value to the template:
+### pass value to template:
 &lt;project-name&gt;/templates/say-hello.html:
 ```html
 <h3>Hello {{ name }}</h3>
@@ -323,7 +323,7 @@ def show_todos(request):
     return render(request, 'todo_list.html', {'todos': todos})
 ```
 #
-### extend templates:
+### extend template:
 &lt;project-name&gt;/templates/base.html:
 ```html
 <!DOCTYPE html>
@@ -504,7 +504,7 @@ Show the message in the redirected template:
 {% endif %}
 ```
 #
-### create a form:
+### create form:
 &lt;project-name&gt;/&lt;app-name&gt;/forms.py:
 ```python
 from django import forms
@@ -520,7 +520,7 @@ from .forms import SimpleForm                                         # target f
 
 def show_form(request):
     form = SimpleForm()
-    return render(request, 'form_template.html', {'form': form})      # Send the form to the template
+    return render(request, 'form_template.html', {'form': form})      # Send form to template
 ```
 template:
 ```html
@@ -579,7 +579,7 @@ class TodoCreateForm(forms.Form):                                    # A simple 
 &lt;project-name&gt;/templates/todo_create.html:
 ```html
 <h1>Todo Create</h1>
-<form action="" method="post">                  <!-- Use the POST method -->
+<form action="" method="post">                  <!-- Use POST method -->
     {% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Create">
