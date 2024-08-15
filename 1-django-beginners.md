@@ -30,7 +30,7 @@
 - [project structure (with form)](#project-structure-with-form-)
 - [add object to model via form (POST)](#add-object-to-model-via-form-post-)
 - [model form](#model-form)
-- []()
+- [update object in model via ModelForm (POST)](#update-object-in-model-via-modelform-post-)
 
 #
 
@@ -626,5 +626,56 @@ class TodoCreateForm(ModelForm):            # A sample model form suitable for T
     class Meta:
         model = Todo
         fields = ['title', 'body']
+```
+#
+### update object in model via ModelForm (POST) :
+&lt;project-name&gt;/&lt;app-name&gt;/models.py:
+```python
+from django.db import models
+
+class Todo(models.Model):                                    # A sample model
+    title = models.CharField(max_length=100)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed = models.BooleanField(default=False)
+```
+&lt;project-name&gt;/&lt;app-name&gt;/forms.py:
+```python
+from django import forms
+from .models import Todo
+
+class TodoUpdateForm(forms.ModelForm):            # A ModelForm suitable for updating Todo model
+    class Meta:
+        model = Todo
+        fields = ['title', 'body']
+```
+&lt;project-name&gt;/templates/todo_update.html:
+```html
+<h1>Update Todo</h1>
+<form action="" method="post">                  <!-- Use POST method -->
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Update">
+</form>
+```
+&lt;project-name&gt;/&lt;app-name&gt;/views.py:
+```python
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Todo
+from .forms import TodoUpdateForm
+
+def todo_update(request, todo_id):
+    todo = Todo.objects.get(id=todo_id)                         # Get the Todo object by id
+    if request.method == 'POST':
+        form = TodoUpdateForm(request.POST, instance=todo)      # Connect form to the existing Todo object
+        if form.is_valid():
+            form.save()                                         # Save the updated Todo object
+            messages.success(request, 'Todo updated successfully!', extra_tags='alert-success')
+            return redirect('todo_list')
+    else:
+        form = TodoUpdateForm(instance=todo)                    # Fill the form with existing data
+
+    return render(request, 'todo_update.html', {'form': form})
 ```
 #
