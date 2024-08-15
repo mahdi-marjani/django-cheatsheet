@@ -33,6 +33,7 @@
 - [update object in model via ModelForm (POST)](#update-object-in-model-via-modelform-post-)
 - [users](#users)
 - [project structure (with users)](#project-structure-with-users-)
+- [register](#register)
 
 #
 
@@ -730,5 +731,44 @@ INSTALLED_APPS = [
       │         └── hello-world.html              # A sample template
       ├── db.sqlite3                              # Django's default database.
       └── manage.py                               # Command-line tool for managing project.
+```
+#
+### register
+&lt;project-name&gt;/accounts/forms.py:
+```python
+from django import forms
+
+class UserRegistrationForm(forms.Form):
+    username = forms.CharField()
+    email = forms.EmailField()
+    password = forms.CharField()
+```
+&lt;project-name&gt;/templates/register.html:
+```html
+<h1>Register</h1>
+<form action="" method="post">                  <!-- Use POST method -->
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Register">
+</form>
+```
+&lt;project-name&gt;/accounts/views.py:
+```python
+from django.shortcuts import render, redirect
+from .forms import UserRegistrationForm
+from django.contrib.auth.models import User
+from django.contrib import messages
+
+def user_register(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            User.objects.create_user(username=data['username'], email=data['email'], password=data['password'])
+            messages.success(request, 'User registered successfully!', extra_tags='alert-success')
+            return redirect('home')
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'register.html', {'form': form})
 ```
 #
