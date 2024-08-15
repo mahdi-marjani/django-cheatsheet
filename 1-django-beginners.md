@@ -546,7 +546,7 @@ template:
       │         ├── __init__.py
       │         ├── admin.py                      # Admin panel configurations.
       │         ├── apps.py                       # App configuration.
-      │         ├── forms.py                      # Django forms.
+      │         ├── forms.py (optional)           # Optional: Django forms.
       │         ├── models.py                     # Defines data models (database structure).
       │         ├── tests.py                      # Tests for app.
       │         ├── views.py                      # View functions for handling requests.
@@ -677,5 +677,56 @@ def todo_update(request, todo_id):
         form = TodoUpdateForm(instance=todo)                    # Fill the form with existing data
 
     return render(request, 'todo_update.html', {'form': form})
+```
+#
+### users:
+create `accounts` app:
+```bash
+python manage.py startapp accounts
+```
+&lt;project-name&gt;/&lt;project-name&gt;/settings.py:
+```python
+INSTALLED_APPS = [
+    ...
+    'accounts',
+    ...
+]
+```
+### project structure (with users) :
+```text
+<project-name>/
+      ├── <project-name>/
+      │         ├── __init__.py
+      │         ├── asgi.py                       # ASGI configuration for async servers.
+      │         ├── settings.py                   # Project settings and configuration.
+      │         ├── urls.py                       # URL routing for project.
+      │         └── wsgi.py                       # WSGI configuration for traditional servers.
+      ├── <app-name>/
+      │         ├── migrations/
+      │         │        ├── __init__.py
+      │         │        └── 0001_initial.py      # Creates initial database tables.
+      │         ├── __init__.py
+      │         ├── admin.py                      # Admin panel configurations.
+      │         ├── apps.py                       # App configuration.
+      │         ├── forms.py (optional)           # Optional: Django forms.
+      │         ├── models.py                     # Defines data models (database structure).
+      │         ├── tests.py                      # Tests for app.
+      │         ├── views.py                      # View functions for handling requests.
+      │         └── urls.py (optional)            # Optional: Defines URL routing for app.
+      ├── accounts/
+      │         ├── migrations/
+      │         │        └── __init__.py
+      │         ├── __init__.py
+      │         ├── admin.py
+      │         ├── apps.py
+      │         ├── forms.py (optional)
+      │         ├── models.py
+      │         ├── tests.py
+      │         ├── views.py
+      │         └── urls.py (optional)
+      ├── templates/
+      │         └── hello-world.html              # A sample template
+      ├── db.sqlite3                              # Django's default database.
+      └── manage.py                               # Command-line tool for managing project.
 ```
 #
