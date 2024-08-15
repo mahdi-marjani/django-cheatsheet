@@ -31,6 +31,8 @@
 - [add object to model via form (POST)](#add-object-to-model-via-form-post-)
 - [model form](#model-form)
 - [update object in model via ModelForm (POST)](#update-object-in-model-via-modelform-post-)
+- [users](#users)
+- [project structure (with users)](#project-structure-with-users-)
 
 #
 
