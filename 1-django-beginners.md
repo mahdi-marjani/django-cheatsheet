@@ -756,7 +756,7 @@ class UserRegistrationForm(forms.Form):
 ```python
 from django.shortcuts import render, redirect
 from .forms import UserRegistrationForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User      # Import Django User model.
 from django.contrib import messages
 
 def user_register(request):
@@ -764,7 +764,10 @@ def user_register(request):
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
+
+            # Create a new user with form data.
             User.objects.create_user(username=data['username'], email=data['email'], password=data['password'])
+
             messages.success(request, 'User registered successfully!', extra_tags='alert-success')
             return redirect('home')
     else:
