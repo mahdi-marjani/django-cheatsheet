@@ -36,6 +36,7 @@
 - [register](#register)
 - [login](#login)
 - [logout](#logout)
+- [request](#request)
 
 #
 
@@ -735,7 +736,7 @@ INSTALLED_APPS = [
       └── manage.py                               # Command-line tool for managing project.
 ```
 #
-### register
+### register:
 &lt;project-name&gt;/accounts/forms.py:
 ```python
 from django import forms
@@ -777,7 +778,7 @@ def user_register(request):
     return render(request, 'register.html', {'form': form})
 ```
 #
-### login
+### login:
 &lt;project-name&gt;/accounts/forms.py:
 ```python
 from django import forms
@@ -826,7 +827,7 @@ def user_login(request):
     return render(request, 'login.html', {'form': form})
 ```
 #
-### logout
+### logout:
 &lt;project-name&gt;/accounts/views.py:
 ```python
 from django.shortcuts import redirect
@@ -837,5 +838,19 @@ def user_logout(request):
     logout(request)
     messages.success(request, 'User logged out successfully!', extra_tags='alert-success')
     return redirect('home')
+```
+#
+### request:
+Use `request` object in template:
+```html
+{% if request.user.is_authenticated %}                  <!-- Check if the user is authenticated using `request` object -->
+    <h2>Hello, {{ request.user.username }}!</h2>        <!-- Display the username from `request` object -->
+    <a href="{% url 'user_logout' %}">logout</a>
+{% else %}
+    <a href="{% url 'user_login' %}">login</a>
+    <a href="{% url 'user_register' %}">register</a>
+{% endif %}
+
+<h2>Welcome to the Home Page!</h2>
 ```
 #
