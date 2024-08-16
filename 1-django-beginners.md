@@ -775,3 +775,46 @@ def user_register(request):
     return render(request, 'register.html', {'form': form})
 ```
 #
+### login
+&lt;project-name&gt;/accounts/forms.py:
+```python
+from django import forms
+
+class UserLoginForm(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField()
+```
+&lt;project-name&gt;/templates/login.html:
+```html
+<h1>Login</h1>
+
+<form action="" method="post"> <!-- Use POST method -->
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Login">
+</form>
+```
+&lt;project-name&gt;/accounts/views.py:
+```python
+from django.shortcuts import render, redirect
+from .forms import UserLoginForm
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
+
+def user_login(request):
+    if request.method == 'POST':
+        form = UserLoginForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            user = authenticate(request, username=data['username'], password=data['password'])
+            if user:
+                login(request, user)
+                messages.success(request, 'User logged in successfully!', extra_tags='alert-success')
+                return redirect('home')
+            else:
+                messages.error(request, 'Invalid username or password!', extra_tags='alert-danger')
+    else:
+        form = UserLoginForm()
+    return render(request, 'login.html', {'form': form})
+```
+#
