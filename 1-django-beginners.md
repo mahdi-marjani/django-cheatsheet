@@ -34,6 +34,7 @@
 - [users](#users)
 - [project structure (with users)](#project-structure-with-users-)
 - [register](#register)
+- [login](#login)
 
 #
 
@@ -799,6 +800,8 @@ class UserLoginForm(forms.Form):
 from django.shortcuts import render, redirect
 from .forms import UserLoginForm
 from django.contrib import messages
+
+# Import Django functions for authenticating and logging in users
 from django.contrib.auth import authenticate, login
 
 def user_login(request):
@@ -806,7 +809,11 @@ def user_login(request):
         form = UserLoginForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
+
+            # Authenticate username and password
             user = authenticate(request, username=data['username'], password=data['password'])
+
+            # Log in user if authentication is successful
             if user:
                 login(request, user)
                 messages.success(request, 'User logged in successfully!', extra_tags='alert-success')
