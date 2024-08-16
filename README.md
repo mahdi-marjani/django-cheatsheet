@@ -1,4 +1,4 @@
-# learn django
+# Django guide
 
 ## courses:
 
