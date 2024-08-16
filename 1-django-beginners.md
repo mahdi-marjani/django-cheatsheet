@@ -35,6 +35,7 @@
 - [project structure (with users)](#project-structure-with-users-)
 - [register](#register)
 - [login](#login)
+- [logout](#logout)
 
 #
 
@@ -823,5 +824,18 @@ def user_login(request):
     else:
         form = UserLoginForm()
     return render(request, 'login.html', {'form': form})
+```
+#
+### logout
+&lt;project-name&gt;/accounts/views.py:
+```python
+from django.shortcuts import redirect
+from django.contrib import messages
+from django.contrib.auth import logout
+
+def user_logout(request):
+    logout(request)
+    messages.success(request, 'User logged out successfully!', extra_tags='alert-success')
+    return redirect('home')
 ```
 #
