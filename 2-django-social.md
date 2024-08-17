@@ -1,6 +1,6 @@
 ## Index
 - [connect app to project (recommended)](#connect-app-to-project-recommended-)
-- []()
+- [project structure with templates (recommended)](#project-structure-with-templates-recommended-)
 
 
 ### connect app to project (recommended) :
