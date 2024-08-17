@@ -1,6 +1,7 @@
 ## Index
 - [connect app to project (recommended)](#connect-app-to-project-recommended-)
 - [project structure with templates (recommended)](#project-structure-with-templates-recommended-)
+- [simple class-based view](#simple-class-based-view)
 
 
 ### connect app to project (recommended) :
@@ -66,6 +67,31 @@ TEMPLATES = [
         'APP_DIRS': True,                     # app templates
         ...
     },
+]
+```
+#
+### simple class-based view:
+
+e.g. app name is `home`
+
+&lt;project-name&gt;/home/views.py:
+```python
+from django.shortcuts import render
+from django.views import View
+
+class HomeView(View):
+    def get(self, request):                             # If the request method is GET, this method runs.
+        return render(request, 'home/index.html')
+    def post(self, request):                            # If the request method is POST, this method runs.
+        return render(request, 'home/index.html')
+```
+&lt;project-name&gt;/home/urls.py:
+```python
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path("", views.HomeView.as_view(), name="home"),
 ]
 ```
 #
