@@ -3,6 +3,7 @@
 - [project structure with templates (recommended)](#project-structure-with-templates-recommended-)
 - [simple class-based view](#simple-class-based-view)
 - [PasswordInput widget](#passwordinput-widget)
+- [form validation](#form-validation)
 
 
 ### connect app to project (recommended) :
