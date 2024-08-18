@@ -2,6 +2,7 @@
 - [connect app to project (recommended)](#connect-app-to-project-recommended-)
 - [project structure with templates (recommended)](#project-structure-with-templates-recommended-)
 - [simple class-based view](#simple-class-based-view)
+- [PasswordInput widget](#passwordinput-widget)
 
 
 ### connect app to project (recommended) :
@@ -93,5 +94,11 @@ from . import views
 urlpatterns = [
     path("", views.HomeView.as_view(), name="home"),
 ]
+```
+#
+### PasswordInput widget:
+&lt;project-name&gt;/&lt;app-name&gt;/forms.py:
+```python
+password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Enter Password'}))
 ```
 #
