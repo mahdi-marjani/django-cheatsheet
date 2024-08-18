@@ -125,3 +125,23 @@ use in template:
 <a href="{% url 'home:home' %}">Home</a>    # namespace:name
 ```
 #
+### form validation:
+&lt;project-name&gt;/&lt;app-name&gt;/forms.py:
+```python
+from django import forms
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+
+class UserRegisterationForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+    def clean_email(self):                                    # Email validation (Check for duplicate email)
+        email = self.cleaned_data.get('email')
+        user = User.objects.filter(email=email).exists()
+        if user:
+            raise ValidationError('Email already exists')
+        return email
+```
+#
