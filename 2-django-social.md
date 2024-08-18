@@ -102,3 +102,26 @@ urlpatterns = [
 password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Enter Password'}))
 ```
 #
+### namespaces:
+
+e.g. app name is `home`
+
+&lt;project-name&gt;/&lt;project-name&gt;/urls.py:
+```python
+path('', include('home.urls', namespace='home')),
+```
+&lt;project-name&gt;/home/urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = "home"                                        # namespace
+urlpatterns = [
+    path("", views.HomeView.as_view(), name="home"),
+]
+```
+use in template:
+```html
+<a href="{% url 'home:home' %}">Home</a>    # namespace:name
+```
+#
