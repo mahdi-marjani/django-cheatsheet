@@ -160,6 +160,7 @@ class UserRegisterationForm(forms.Form):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
+    # overriding clean
     def clean(self):                                            # Password validation (Check Password1 and Password2 match)
         cleaned_data = super().clean()
         password1 = cleaned_data.get('password1')
