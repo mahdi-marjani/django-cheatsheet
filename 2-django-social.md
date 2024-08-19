@@ -202,7 +202,7 @@ e.g. app name is `accounts`
 
 &lt;project-name&gt;/accounts/views.py:
 ```python
-class UserLogoutView(LoginRequiredMixin, View):    # If user is logged in, this view works; otherwise, redirect them to login page.
+class UserLogoutView(LoginRequiredMixin, View): # If user is logged in, this view works; otherwise, redirect them to login page.
     def get(self, request):
         logout(request)
         messages.success(request, 'User logged out successfully', 'success')
