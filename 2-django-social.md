@@ -7,7 +7,8 @@
 - [form validation](#form-validation)
 - [form validation (2 field)](#form-validation-2-field-)
 - [dispatch](#dispatch)
-- [LoginRequiredMixin](#LoginRequiredMixin)
+- [LoginRequiredMixin](#loginrequiredmixin)
+- [customize user model (Log in with username or email)](#customize-user-model-log-in-with-username-or-email-)
 
 
 ### connect app to project (recommended) :
@@ -208,5 +209,34 @@ class UserLogoutView(LoginRequiredMixin, View):
         logout(request)
         messages.success(request, 'User logged out successfully', 'success')
         return redirect('home:home')
+```
+#
+### customize user model (Log in with username or email) :
+&lt;project-name&gt;/accounts/authenticate.py:
+```python
+from django.contrib.auth.models import User
+
+class EmailBackend:
+    def authenticate(self, request, username=None, password=None):
+        try:
+            user = User.objects.filter(email=username).first()        # Use email instead of username
+            if user.check_password(password):
+                return user
+            return None
+        except User.DoesNotExist:
+            return None
+
+    def get_user(self, user_id):
+        try:
+            return User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            return None
+```
+&lt;project-name&gt;/&lt;project-name&gt;/settings.py:
+```python
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',    # Default model
+    'accounts.authenticate.EmailBackend',           # Custom model
+]
 ```
 #
