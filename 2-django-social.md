@@ -7,6 +7,7 @@
 - [form validation](#form-validation)
 - [form validation (2 field)](#form-validation-2-field-)
 - [dispatch](#dispatch)
+- [LoginRequiredMixin](#LoginRequiredMixin)
 
 
 ### connect app to project (recommended) :
@@ -194,4 +195,17 @@ class HomeView(View):
         return render(request, 'home/index.html')
 ```
 In this example, `dispatch` is used to run custom code before calling `get` or `post`.
+#
+### LoginRequiredMixin:
+
+e.g. app name is `accounts`
+
+&lt;project-name&gt;/accounts/views.py:
+```python
+class UserLogoutView(LoginRequiredMixin, View):    # If user is logged in, this view works; otherwise, redirect them to login page.
+    def get(self, request):
+        logout(request)
+        messages.success(request, 'User logged out successfully', 'success')
+        return redirect('home:home')
+```
 #
