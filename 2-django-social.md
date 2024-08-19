@@ -6,6 +6,7 @@
 - [namespaces](#namespaces)
 - [form validation](#form-validation)
 - [form validation (2 field)](#form-validation-2-field-)
+- [dispatch](#dispatch)
 
 
 ### connect app to project (recommended) :
@@ -168,4 +169,29 @@ class UserRegisterationForm(forms.Form):
         if password1 and password2 and password1 != password2:
             raise ValidationError('Passwords do not match')
 ```
+#
+### dispatch:
+override it to add custom logic before processing the request.
+
+e.g. app name is `home`
+
+&lt;project-name&gt;/home/views.py:
+```python
+from django.shortcuts import render
+from django.views import View
+
+class HomeView(View):
+    def dispatch(self, request, *args, **kwargs):
+
+        # Custom logic here
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request):
+        return render(request, 'home/index.html')
+
+    def post(self, request):
+        return render(request, 'home/index.html')
+```
+In this example, `dispatch` is used to run custom code before calling `get` or `post`.
 #
