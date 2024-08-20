@@ -9,6 +9,7 @@
 - [dispatch](#dispatch)
 - [LoginRequiredMixin](#loginrequiredmixin)
 - [customize user model (Log in with username or email)](#customize-user-model-log-in-with-username-or-email-)
+- [model relationships](#model-relationships)
 
 
 ### connect app to project (recommended) :
@@ -238,5 +239,19 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',    # Default model
     'accounts.authenticate.EmailBackend',           # Custom model
 ]
+```
+#
+### model relationships:
+models.py:
+```python
+from django.db import models
+from django.contrib.auth.models import User                     # Another Model
+
+class Post(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)    # ForeignKey to User, links each post to a user
+    body = models.TextField()
+    slug = models.SlugField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 ```
 #
