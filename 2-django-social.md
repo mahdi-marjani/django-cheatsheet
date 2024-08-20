@@ -9,7 +9,7 @@
 - [dispatch](#dispatch)
 - [LoginRequiredMixin](#loginrequiredmixin)
 - [customize user model (Log in with username or email)](#customize-user-model-log-in-with-username-or-email-)
-- [model relationships](#model-relationships)
+- [customize admin](#customize-admin)
 
 
 ### connect app to project (recommended) :
@@ -253,5 +253,21 @@ class Post(models.Model):
     slug = models.SlugField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+```
+#
+### customize admin:
+admin.py:
+```python
+from django.contrib import admin
+from .models import Post                                                # Post model
+
+@admin.register(Post)
+class PostAdmin(admin.ModelAdmin):                                      # Custom admin for Post
+    list_display = ('user', 'body', 'slug', 'created_at', 'updated_at') # Show these fields in admin panel
+    search_fields = ('body', 'slug')                                    # Search by these fields
+    list_filter = ('updated_at',)                                       # Filter by update date
+    prepopulated_fields = {'slug': ('body',)}                           # Auto-fill slug from body
+    raw_id_fields = ('user',)                                           # Use raw ID for user
+
 ```
 #
