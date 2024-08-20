@@ -10,6 +10,7 @@
 - [LoginRequiredMixin](#loginrequiredmixin)
 - [customize user model (Log in with username or email)](#customize-user-model-log-in-with-username-or-email-)
 - [customize admin](#customize-admin)
+- [model methods (get_absolute_url)](#model-methods-get_absolute_url-)
 
 
 ### connect app to project (recommended) :
@@ -269,5 +270,50 @@ class PostAdmin(admin.ModelAdmin):                                      # Custom
     prepopulated_fields = {'slug': ('body',)}                           # Auto-fill slug from body
     raw_id_fields = ('user',)                                           # Use raw ID for user
 
+```
+#
+### model methods (get_absolute_url) :
+models.py:
+```python
+from django.db import models
+from django.contrib.auth.models import User
+from django.urls import reverse
+
+class Post(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    body = models.TextField()
+    slug = models.SlugField(unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def get_absolute_url(self):
+        return reverse('post_detail', kwargs={'slug': self.slug})  # Returns the post detail URL
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = "home"
+
+urlpatterns = [
+    path('', views.HomeView.as_view(), name='home'),
+    path('post/<slug:slug>/', views.PostDetailView.as_view(), name='post_detail'),  # URL pattern for post details
+]
+```
+views.py:
+```python
+from django.shortcuts import render, get_object_or_404
+from django.views import View
+from .models import Post
+
+class PostDetailView(View):
+    def get(self, request, slug):
+        post = get_object_or_404(Post, slug=slug)                        # Get post by slug
+        return render(request, 'home/post_detail.html', {'post': post})  # Render post detail template
+```
+use in template:
+```html
+<a href="{{ post.get_absolute_url }}">Read more</a>  <!-- Use get_absolute_url -->
 ```
 #
