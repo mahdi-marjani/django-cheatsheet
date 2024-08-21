@@ -11,6 +11,7 @@
 - [customize user model (Log in with username or email)](#customize-user-model-log-in-with-username-or-email-)
 - [customize admin](#customize-admin)
 - [model methods (get_absolute_url)](#model-methods-get_absolute_url-)
+- [setup](#setup-)
 
 
 ### connect app to project (recommended) :
@@ -316,4 +317,21 @@ use in template:
 ```html
 <a href="{{ post.get_absolute_url }}">Read more</a>  <!-- Use get_absolute_url -->
 ```
+#
+### setup :
+The `setup` method is used in class-based views to initialize attributes before handling the request.
+views.py:
+```python
+from django.shortcuts import render
+from django.views import View
+
+class HomeView(View):
+    def setup(self, request, *args, **kwargs):
+        self.user = request.user                 # Initialize user attribute
+        super().setup(request, *args, **kwargs)  # Call the parent's setup method
+
+    def get(self, request):
+        return render(request, 'home/index.html')
+```
+In this example, the `setup` method initializes the `user` attribute before the request is processed.
 #
