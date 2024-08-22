@@ -348,3 +348,13 @@ get_list_or_404:
 posts = get_list_or_404(Post, user=request.user)  # Fetch all posts by user or return 404
 ```
 #
+### email backend setup:
+settings.py:
+```python
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'   # Email sending system
+EMAIL_HOST = 'smtp.gmail.com'                                   # SMTP server address
+EMAIL_PORT = 587                                                # SMTP port
+EMAIL_HOST_USER = 'email'                                       # Your email address
+EMAIL_HOST_PASSWORD = 'password'                                # Your email password
+EMAIL_USE_TLS = True                                            # Use TLS for secure connection
+```
