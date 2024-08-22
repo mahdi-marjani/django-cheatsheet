@@ -13,6 +13,7 @@
 - [model methods (get_absolute_url)](#model-methods-get_absolute_url-)
 - [setup](#setup-)
 - [get_object_or_404 and get_list_or_404](#get_object_or_404-and-get_list_or_404)
+- [email backend setup](#email-backend-setup)
 
 
 ### connect app to project (recommended) :
