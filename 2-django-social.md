@@ -338,6 +338,7 @@ In this example, the `setup` method initializes the `user` attribute before the 
 #
 ### get_object_or_404 and get_list_or_404:
 Fetch an object or list from database; return a 404 if not found.
+
 get_object_or_404:
 ```python
 post = get_object_or_404(Post, slug=slug)  # Fetch post by slug or return 404
