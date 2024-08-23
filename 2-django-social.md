@@ -364,19 +364,19 @@ EMAIL_USE_TLS = True                                            # Use TLS for se
 ### forgot password (reset password by email) :
 &lt;project-name&gt;/accounts/views.py:
 ```python
-class UserPasswordResetView(auth_views.PasswordResetView):
+class UserPasswordResetView(auth_views.PasswordResetView):                # Get email and send password reset link
     template_name = 'accounts/password_reset_form.html'
     success_url = reverse_lazy('accounts:password_reset_done')
     email_template_name = 'accounts/password_reset_email.html'
 
-class UserPasswordResetDoneView(auth_views.PasswordResetDoneView):
+class UserPasswordResetDoneView(auth_views.PasswordResetDoneView):        # Notify user that reset email was sent
     template_name = 'accounts/password_reset_done.html'
 
-class UserPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+class UserPasswordResetConfirmView(auth_views.PasswordResetConfirmView):  # Validate link and reset password
     template_name = 'accounts/password_reset_confirm.html'
     success_url = reverse_lazy('accounts:password_reset_complete')
 
-class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):    # Notify user that password has been reset
     template_name = 'accounts/password_reset_complete.html'
 ```
 &lt;project-name&gt;/accounts/urls.py:
