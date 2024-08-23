@@ -359,3 +359,4 @@ EMAIL_HOST_USER = 'email'                                       # Your email add
 EMAIL_HOST_PASSWORD = 'password'                                # Your email password
 EMAIL_USE_TLS = True                                            # Use TLS for secure connection
 ```
+#
