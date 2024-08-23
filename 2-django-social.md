@@ -14,6 +14,7 @@
 - [setup](#setup-)
 - [get_object_or_404 and get_list_or_404](#get_object_or_404-and-get_list_or_404)
 - [email backend setup](#email-backend-setup)
+- [forgot password (reset password by email)](#forgot-password-reset-password-by-email-)
 
 
 ### connect app to project (recommended) :
@@ -358,5 +359,71 @@ EMAIL_PORT = 587                                                # SMTP port
 EMAIL_HOST_USER = 'email'                                       # Your email address
 EMAIL_HOST_PASSWORD = 'password'                                # Your email password
 EMAIL_USE_TLS = True                                            # Use TLS for secure connection
+```
+#
+### forgot password (reset password by email) :
+&lt;project-name&gt;/accounts/views.py:
+```python
+class UserPasswordResetView(auth_views.PasswordResetView):
+    template_name = 'accounts/password_reset_form.html'
+    success_url = reverse_lazy('accounts:password_reset_done')
+    email_template_name = 'accounts/password_reset_email.html'
+
+class UserPasswordResetDoneView(auth_views.PasswordResetDoneView):
+    template_name = 'accounts/password_reset_done.html'
+
+class UserPasswordResetConfirmView(auth_views.PasswordResetConfirmView):
+    template_name = 'accounts/password_reset_confirm.html'
+    success_url = reverse_lazy('accounts:password_reset_complete')
+
+class PasswordResetCompleteView(auth_views.PasswordResetCompleteView):
+    template_name = 'accounts/password_reset_complete.html'
+```
+&lt;project-name&gt;/accounts/urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'accounts'
+urlpatterns = [
+    ...
+    path('reset/', views.UserPasswordResetView.as_view(), name='reset_password'),
+    path('reset/done/', views.UserPasswordResetDoneView.as_view(), name='password_reset_done'),
+    path('confirm/<uidb64>/<token>/', views.UserPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('confirm/complete/', views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+]
+```
+&lt;project-name&gt;/accounts/templates/accounts/password_reset_form.html:
+```html
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Reset">
+</form>
+```
+&lt;project-name&gt;/accounts/templates/accounts/password_reset_email.html:
+```html
+Someone asked for password reset for email {{ email }}. Follow the link below:
+{{ protocol}}://{{ domain }}{% url 'account:password_reset_confirm' uidb64=uid token=token %}
+```
+&lt;project-name&gt;/accounts/templates/accounts/password_reset_done.html:
+```html
+<p>we sent you an email.</p>
+```
+&lt;project-name&gt;/accounts/templates/accounts/password_reset_confirm.html:
+```html
+{% if validlink %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Change">
+</form>
+{% else %}
+<p>This password reset link is invalid</p>
+{% endif %}
+```
+&lt;project-name&gt;/accounts/templates/accounts/password_reset_complete.html:
+```html
+<p>your password changed</p>
 ```
 #
