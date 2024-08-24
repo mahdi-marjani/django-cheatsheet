@@ -16,6 +16,7 @@
 - [email backend setup](#email-backend-setup)
 - [forgot password (reset password by email)](#forgot-password-reset-password-by-email-)
 - [database ordering](#database-ordering)
+- [backward relation of database tables](#backward-relation-of-database-tables)
 
 
 ### connect app to project (recommended) :
@@ -447,5 +448,24 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-created_at']                            # Default ordering for all queries
+```
+#
+### backward relation of database tables:
+models.py:
+```python
+class Post(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts') # Creates reverse relation from User to Post
+    body = models.TextField()
+    slug = models.SlugField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+```
+views.py:
+```python
+class UserProfileView(LoginRequiredMixin, View):
+    def get(self, request, user_id):
+        user = get_object_or_404(User, pk=user_id)
+        posts = user.posts.all()                                                        # Get all posts related to the user
+        return render(request, 'account/profile.html', {'user': user, 'posts': posts})
 ```
 #
