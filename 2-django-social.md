@@ -15,6 +15,7 @@
 - [get_object_or_404 and get_list_or_404](#get_object_or_404-and-get_list_or_404)
 - [email backend setup](#email-backend-setup)
 - [forgot password (reset password by email)](#forgot-password-reset-password-by-email-)
+- [database ordering](#database-ordering)
 
 
 ### connect app to project (recommended) :
@@ -425,5 +426,26 @@ Someone asked for password reset for email {{ email }}. Follow the link below:
 &lt;project-name&gt;/accounts/templates/accounts/password_reset_complete.html:
 ```html
 <p>your password changed</p>
+```
+#
+### database ordering:
+Inside a view:
+```python
+class HomeView(View):
+    def get(self, request):
+        posts = Post.objects.order_by('-created_at')                    # Ordering only for this query
+        return render(request, 'home/index.html', {'posts': posts})
+```
+Inside a model:
+```python
+class Post(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    body = models.TextField()
+    slug = models.SlugField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']                            # Default ordering for all queries
 ```
 #
