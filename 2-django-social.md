@@ -474,9 +474,7 @@ class UserProfileView(LoginRequiredMixin, View):
 &lt;project-name&gt;/accounts/views.py:
 ```python
 class UserLoginView(View):
-    form_class = UserLoginForm
-    template_name = 'account/login.html'
-    
+    ...
     def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
         self.next = request.GET.get('next')                # Get the 'next' query parameter value
         return super().setup(request, *args, **kwargs)
@@ -495,5 +493,6 @@ class UserLoginView(View):
             else:
                 messages.error(request, 'Invalid credentials', 'danger')
                 return render(request, self.template_name, {'form': form})
+    ...
 ```
 #
