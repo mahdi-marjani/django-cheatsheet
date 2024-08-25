@@ -17,6 +17,7 @@
 - [forgot password (reset password by email)](#forgot-password-reset-password-by-email-)
 - [database ordering](#database-ordering)
 - [backward relation of database tables](#backward-relation-of-database-tables)
+- [query parameter 'next'](#query-parameter-next)
 
 
 ### connect app to project (recommended) :
@@ -467,5 +468,32 @@ class UserProfileView(LoginRequiredMixin, View):
         user = get_object_or_404(User, pk=user_id)
         posts = user.posts.all()                                                        # Get all posts related to the user
         return render(request, 'account/profile.html', {'user': user, 'posts': posts})
+```
+#
+### query parameter 'next':
+&lt;project-name&gt;/accounts/views.py:
+```python
+class UserLoginView(View):
+    form_class = UserLoginForm
+    template_name = 'account/login.html'
+    
+    def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
+        self.next = request.GET.get('next')                # Get the 'next' query parameter value
+        return super().setup(request, *args, **kwargs)
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            user = authenticate(request, username=data['username'], password=data['password'])
+            if user is not None:
+                login(request, user)
+                messages.success(request, 'User logged in successfully', 'success')
+                if self.next:
+                    return redirect(self.next)             # Redirect user to 'next' query URL
+                return redirect('home:home')
+            else:
+                messages.error(request, 'Invalid credentials', 'danger')
+                return render(request, self.template_name, {'form': form})
 ```
 #
