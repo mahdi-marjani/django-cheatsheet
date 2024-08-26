@@ -18,6 +18,7 @@
 - [database ordering](#database-ordering)
 - [backward relation of database tables](#backward-relation-of-database-tables)
 - [query parameter 'next'](#query-parameter-next)
+- ['contains' field lookup](#contains-field-lookup)
 
 
 ### connect app to project (recommended) :
