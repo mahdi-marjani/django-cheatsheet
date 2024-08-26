@@ -496,3 +496,11 @@ class UserLoginView(View):
     ...
 ```
 #
+### 'contains' field lookup:
+views.py:
+```python
+search = request.GET.get('search')                # Get the 'search' query parameter value
+if search:
+    posts = posts.filter(body__contains=search)   # Posts that have 'search' in the body
+```
+#
