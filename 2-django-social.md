@@ -20,6 +20,9 @@
 - [query parameter 'next'](#query-parameter-next)
 - ['contains' field lookup](#contains-field-lookup)
 - [customize user model (Extending the existing User model)](#customize-user-model-extending-the-existing-user-model-)
+- [signals](#signals)
+- [connect signals to project](#connect-signals-to-project)
+- [project structure (with signals)](#project-structure-with-signals-)
 
 
 ### connect app to project (recommended) :
@@ -532,3 +535,49 @@ admin.site.unregister(User)                       # Unregister the default UserA
 admin.site.register(User, ExtendedUserAdmin)      # Register new UserAdmin with Profile
 ```
 #
+### signals:
+&lt;project-name&gt;/accounts/signals.py:
+```python
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from .models import Profile
+
+@receiver(post_save, sender=User)                        # Runs after saving (post_save) a User
+def create_profile(sender, **kwargs):                    # Auto create Profile after User is saved
+    if kwargs['created']:                                # If User was just created
+        Profile.objects.create(user=kwargs['instance'])  # Create a Profile for the new User
+```
+### connect signals to project:
+&lt;project-name&gt;/accounts/apps.py:
+```python
+from django.apps import AppConfig
+
+class AccountConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = 'account'
+
+    def ready(self):
+        from . import signals                              # Import signals when the app is ready
+```
+### project structure (with signals) :
+```text
+<project-name>/
+      ├── <project-name>/
+      │     ├── __init__.py
+      │     ├── asgi.py
+      │     ├── settings.py
+      │     ├── urls.py
+      │     └── wsgi.py
+      ├── <app-name>/
+      │     ├── migrations/
+      │     │     └── __init__.py
+      │     ├── __init__.py
+      │     ├── admin.py
+      │     ├── apps.py
+      │     ├── models.py
+      │     ├── tests.py
+      │     ├── views.py
+      │     └── signals.py            # signals 
+      └── manage.py
+```
