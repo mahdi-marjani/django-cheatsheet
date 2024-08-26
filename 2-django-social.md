@@ -19,6 +19,7 @@
 - [backward relation of database tables](#backward-relation-of-database-tables)
 - [query parameter 'next'](#query-parameter-next)
 - ['contains' field lookup](#contains-field-lookup)
+- [customize user model (Extending the existing User model)](#customize-user-model-extending-the-existing-user-model-)
 
 
 ### connect app to project (recommended) :
@@ -503,5 +504,31 @@ views.py:
 search = request.GET.get('search')                # Get the 'search' query parameter value
 if search:
     posts = posts.filter(body__contains=search)   # Posts that have 'search' in the body
+```
+#
+### customize user model (Extending the existing User model) :
+&lt;project-name&gt;/accounts/models.py:
+```python
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Link Profile to User
+    age = models.PositiveSmallIntegerField(default=0)            # Age field
+    bio = models.TextField(null=True, blank=True)                # Bio field
+```
+&lt;project-name&gt;/accounts/admin.py:
+```python
+from django.contrib import admin
+from .models import Relation, Profile
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
+
+class ProfileInline(admin.StackedInline):
+    model = Profile                               # Inline Profile in UserAdmin
+    can_delete = False                            # Can't delete Profile from admin
+
+class ExtendedUserAdmin(UserAdmin):
+    inlines = (ProfileInline, )                   # Add Profile to UserAdmin
+
+admin.site.unregister(User)                       # Unregister the default UserAdmin
+admin.site.register(User, ExtendedUserAdmin)      # Register new UserAdmin with Profile
 ```
 #
