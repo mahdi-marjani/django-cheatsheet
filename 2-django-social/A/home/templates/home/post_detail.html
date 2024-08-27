@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% if post.user.id == request.user.id %}
+<a href="{% url 'home:post_delete' post.id %}" class="btn btn-danger">Delete</a>
+<a href="{% url 'home:post_update' post.id %}" class="btn btn-info">Update</a>
+{% endif %}
+
+<p>
+    <a href="{% url 'account:user_profile' post.user.id %}">{{ post.user.username }}</a>
+    - {{ post.updated_at|date:"Y-m-d H:i:s" }}
+</p>
+<p>
+    {{ post.body }}
+</p>
+<hr>
+
+{% if request.user.is_authenticated %}
+<a href="{% url 'home:post_like' post.id %}" class="{% if can_like %}disabled{% endif %} btn btn-primary col-md-2">like {{ post.likes_count }}</a>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Comment">
+</form><br>
+{% else %}
+<p class="alert alert-danger">only logged in users can comment</p>
+{% endif %}
+
+{% for comment in comments %}
+<div class="card">
+    <p class="card-header">{{ comment.user.username }} - {{ comment.created_at|timesince }}</p>
+    <p class="card-body">{{ comment.body }}</p>
+
+    {% if request.user.is_authenticated %}
+    <form action="{% url 'home:add_reply' post.id comment.id %}" method="post">
+        {% csrf_token %}
+        {{ reply_form.as_p }}
+        <input type="submit" value="Reply">
+    </form>
+    {% endif %}
+    
+    {% with replies=comment.rcomments.all %}
+    {% for reply in replies %}
+    <p class="bg-primary p-3 m-2">{{ reply.user.username }} <br> {{ reply.body }}</p>
+    {% endfor %}
+    {% endwith %}
+</div><br>
+{% empty %}
+<p>No comments</p>
+{% endfor %}
+{% endblock %}
