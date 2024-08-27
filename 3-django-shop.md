@@ -10,37 +10,26 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
 class User(AbstractBaseUser):  # Custom user model
-    # Email field, must be unique
-    email = models.EmailField(max_length=255, unique=True)
-    # Phone number field, must be unique
-    phone_number = models.CharField(max_length=11, unique=True)
-    # Full name field (required)
-    full_name = models.CharField()
-    # Check if the user is active
-    is_active = models.BooleanField(default=True)
-    # Check if the user is an admin
-    is_admin = models.BooleanField(default=False)
+    email = models.EmailField(max_length=255, unique=True)        # Email field, must be unique
+    phone_number = models.CharField(max_length=11, unique=True)   # Phone number field, must be unique
+    full_name = models.CharField()                                # Full name field (required)
+    is_active = models.BooleanField(default=True)                 # Check if the user is active
+    is_admin = models.BooleanField(default=False)                 # Check if the user is an admin
 
-    # The field used for logging in (phone number in this case); this field must be unique
-    USERNAME_FIELD = 'phone_number'
-    # Fields that are required along with the USERNAME_FIELD
-    REQUIRED_FIELDS = ['email', 'full_name']
+    USERNAME_FIELD = 'phone_number'                               # The field used for logging in; this field must be unique
+    REQUIRED_FIELDS = ['email', 'full_name']                      # Fields that are required along with the USERNAME_FIELD
 
-    # String representation of the user object
-    def __str__(self):
+    def __str__(self):                                            # String representation of the user object
         return self.email
     
-    # Always returns True, allows all permissions
-    def has_perm(self, perm, obj=None):
+    def has_perm(self, perm, obj=None):                           # Always returns True, allows all permissions
         return True
     
-    # Always returns True, allows all app label permissions
-    def has_module_perms(self, app_label):
+    def has_module_perms(self, app_label):                        # Always returns True, allows all app label permissions
         return True
     
-    # If the user is admin, they can access the admin panel
     @property
-    def is_staff(self):
+    def is_staff(self):                                           # If the user is admin, they can access the admin panel
         return self.is_admin
 ```
 #
