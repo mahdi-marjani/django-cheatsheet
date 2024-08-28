@@ -1,9 +1,10 @@
 ## Index
-- [customize user model (Substituting a custom User model)](#customize-user-model-substituting-a-custom-user-model-)
+- [custom user model (Substituting a custom User model)](#custom-user-model-substituting-a-custom-user-model-)
+- [custom user manager](#custom-user-manager)
 
 
 
-### customize user model (Substituting a custom User model) :
+### custom user model (Substituting a custom User model) :
 &lt;project-name&gt;/accounts/models.py:
 ```python
 from django.db import models
@@ -31,5 +32,43 @@ class User(AbstractBaseUser):  # Custom user model
     @property
     def is_staff(self):                                           # If the user is admin, they can access the admin panel
         return self.is_admin
+```
+#
+### custom user manager:
+&lt;project-name&gt;/accounts/managers.py:
+```python
+from django.contrib.auth.models import BaseUserManager
+
+class UserManager(BaseUserManager):
+    def create_user(self, phone_number, email, full_name, password):       # Create a regular user
+        if not phone_number:
+            raise ValueError('Users must have a phone number')             # Phone number is required
+        if not email:
+            raise ValueError('Users must have an email address')           # Email is required
+        if not full_name:
+            raise ValueError('Users must have a full name')                # Full name is required
+        
+        user = self.model(
+            phone_number = phone_number,
+            email = self.normalize_email(email),                           # Normalize the email
+            full_name = full_name
+        )
+
+        user.set_password(password)                                        # Hash and set the password
+        user.save(using=self._db)                                          # Save the user in the database
+        return user
+
+    def create_superuser(self, phone_number, email, full_name, password):  # Create a super user
+        user = self.create_user(
+            phone_number = phone_number,
+            email = email,
+            full_name = full_name,
+            password = password
+        )
+
+        user.is_admin = True                                               # Make the user an admin
+        user.save(using=self._db)                                          # Save the superuser in the database
+
+        return user
 ```
 #
