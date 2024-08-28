@@ -74,7 +74,7 @@ class UserManager(BaseUserManager):
 &lt;project-name&gt;/accounts/models.py:
 ```python
 ...
-from .managers import UserManager
+from .managers import UserManager                                  # Manager 
 
 class User(AbstractBaseUser):
     email = models.EmailField(max_length=255, unique=True)
