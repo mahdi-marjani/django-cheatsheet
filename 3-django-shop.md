@@ -2,6 +2,7 @@
 - [custom user model (Substituting a custom User model)](#custom-user-model-substituting-a-custom-user-model-)
 - [custom user manager](#custom-user-manager)
 - [custom user form](#custom-user-form)
+- [custom user admin](#custom-user-admin)
 
 
 
@@ -125,5 +126,41 @@ class UserChangeForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['email', 'phone_number', 'full_name', 'password', 'last_login']      # Fields to include in form
+```
+#
+### custom user admin:
+&lt;project-name&gt;/accounts/admin.py:
+```python
+from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from .forms import UserCreationForm, UserChangeForm
+from .models import User
+from django.contrib.auth.models import Group
+
+class UserAdmin(BaseUserAdmin):
+    form = UserChangeForm                                   # Form for editing users
+    add_form = UserCreationForm                             # Form for creating new users
+    list_display = ('email', 'phone_number', 'is_admin')    # Columns in admin list view
+    list_filter = ('is_admin',)                             # Filter by admin status
+
+    fieldsets = (
+        ('Main', {'fields': ('email', 'phone_number', 'full_name', 'password')}),   # Main user fields
+        ('Permissions', {'fields': ('is_active', 'is_admin', 'last_login')}),       # Permissions section
+    )
+    
+    add_fieldsets = (
+        (None, {'fields': ('phone_number', 'email', 'full_name', 'password1', 'password2')}),   # Fields for new users
+    )
+    
+    search_fields = ('email', 'full_name')                    # Search by email or full name
+    ordering = ('full_name',)                                 # Order by full name in list
+    filter_horizontal = ()                                    # No filter horizontal fields
+    
+admin.site.unregister(Group)                                  # Remove Group model from admin
+admin.site.register(User, UserAdmin)                          # Register custom User model in admin
+```
+&lt;project-name&gt;/&lt;project-name&gt;/settings.py:
+```python
+AUTH_USER_MODEL = 'accounts.User'   # Use custom User model in the project (app_name.user_model_name)
 ```
 #
