@@ -372,6 +372,9 @@ EMAIL_USE_TLS = True                                            # Use TLS for se
 ### forgot password (reset password by email) :
 &lt;project-name&gt;/accounts/views.py:
 ```python
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
+
 class UserPasswordResetView(auth_views.PasswordResetView):                # Get email and send password reset link
     template_name = 'accounts/password_reset_form.html'
     success_url = reverse_lazy('accounts:password_reset_done')
