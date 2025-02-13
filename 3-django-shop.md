@@ -12,7 +12,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 
-class User(AbstractBaseUser):  # Custom user model
+class User(AbstractBaseUser):                                     # Custom user model
     email = models.EmailField(max_length=255, unique=True)        # Email field, must be unique
     phone_number = models.CharField(max_length=11, unique=True)   # Phone number field, must be unique
     full_name = models.CharField()                                # Full name field (required)
