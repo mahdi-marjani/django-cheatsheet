@@ -515,6 +515,9 @@ if search:
 ### customize user model (Extending the existing User model) :
 &lt;project-name&gt;/accounts/models.py:
 ```python
+from django.db import models
+from django.contrib.auth.models import User
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)  # Link Profile to User
     age = models.PositiveSmallIntegerField(default=0)            # Age field
