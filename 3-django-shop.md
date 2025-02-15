@@ -115,7 +115,7 @@ class UserCreationForm(forms.ModelForm):
 
 class UserChangeForm(forms.ModelForm):
     password = ReadOnlyPasswordHashField(                                              # Read-only password field
-                    help_text="you can change password using <a href=\"../password/\">this form</a>."
+                    help_text='you can change password using <a href="../password/">this form</a>.'
                 )  
 
     class Meta:
