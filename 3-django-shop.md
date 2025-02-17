@@ -3,6 +3,7 @@
 - [custom user manager](#custom-user-manager)
 - [custom user form](#custom-user-form)
 - [custom user admin](#custom-user-admin)
+- [sessions](#sessions)
 
 
 
@@ -157,5 +158,32 @@ admin.site.register(User, UserAdmin)                          # Register custom 
 &lt;project-name&gt;/&lt;project-name&gt;/settings.py:
 ```python
 AUTH_USER_MODEL = 'accounts.User'   # Use custom User model in the project (app_name.user_model_name)
+```
+#
+### sessions:
+create and use session:
+```python
+>>> request.session[0] = "bar"
+>>> request.session[0]  # KeyError
+>>> request.session["0"]
+'bar'
+```
+When sessions are saved:
+```python
+# ✅ Session is modified and saved.
+request.session["foo"] = "bar"
+
+# ✅ Session is modified and saved.
+del request.session["foo"]
+
+# ✅ Session is modified and saved.
+request.session["foo"] = {}
+
+# ❌ Session is NOT modified or saved, because this modifies
+# request.session['foo'] instead of request.session
+request.session["foo"]["bar"] = "baz"
+
+# ℹ️ To save it, we can set:
+request.session.modified = True
 ```
 #
