@@ -1,0 +1,14 @@
+<nav class="navbar navbar-expand-lg text-bg-info">
+    <div class="container-fluid">
+        <div class="navbar-nav">
+            <a class="nav-link active" href="{% url 'home:home' %}">Home</a>
+            {% if user.is_authenticated %}
+                <span class="nav-link active">Welcome, {{ user.full_name }}</span>
+                <a class="nav-link active" href="{% url 'accounts:user_logout' %}">Logout</a>
+            {% else %}
+                <a class="nav-link active" href="{% url 'accounts:user_register' %}">Register</a>
+                <a class="nav-link active" href="{% url 'accounts:user_login' %}">Login</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>

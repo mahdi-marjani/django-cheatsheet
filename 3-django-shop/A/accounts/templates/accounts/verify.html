@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+
+  <form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Send">
+  </form>
+
+  <p>
+    <a href="{% url 'accounts:resend_otp' %}"
+        id="resend-otp-link"
+        style="color: blue;"
+        class="disabled"
+        onclick="return false;">
+        Resend OTP Code (60)
+    </a>
+  </p>
+
+  <script>
+    let timeLeft = 60;
+    const resendLink = document.getElementById('resend-otp-link');
+
+    function startTimer() {
+      const countdown = setInterval(() => {
+        timeLeft -= 1;
+        resendLink.textContent = `Resend OTP Code (${timeLeft})`;
+
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          resendLink.textContent = 'Resend OTP Code';
+          resendLink.classList.remove('disabled');
+          resendLink.style.color = 'blue';
+          resendLink.style.cursor = 'pointer';
+          resendLink.removeAttribute('onclick');
+        }
+      }, 1000);
+    }
+
+    window.onload = startTimer;
+  </script>
+
+  <style>
+    .disabled {
+      color: grey !important;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  </style>
+{% endblock %}
