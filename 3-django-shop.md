@@ -4,6 +4,7 @@
 - [custom user form](#custom-user-form)
 - [custom user admin](#custom-user-admin)
 - [sessions](#sessions)
+- [static files](#static-files)
 
 
 
@@ -185,5 +186,50 @@ request.session["foo"]["bar"] = "baz"
 
 # ℹ️ To save it, we can set:
 request.session.modified = True
+```
+#
+### static files:
+**for each app:**
+
+settings file:
+```python
+STATIC_URL = "static/"
+```
+tree:
+```text
+my_app/
+├── __init__.py
+├── admin.py
+├── apps.py
+├── models.py
+├── tests.py
+├── urls.py
+├── views.py
+├── migrations/
+│   └── __init__.py
+├── static/
+│   └── my_app/
+│       └── img/
+│           └── example.jpg
+└── templates/
+    └── my_app/
+        └── template.html
+```
+template.html:
+```html
+{% load static %}
+<img src="{% static 'my_app/example.jpg' %}" alt="My image">
+```
+
+**global:**
+
+settings file:
+```python
+STATICFILES_DIRS = [
+    BASE_DIR / "static"
+]
+```
+tree:
+```text
 ```
 #
