@@ -1,4 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block extra_head %}
+
+    <link rel="stylesheet" href="{% static 'home/css/style.css' %}">
+
+{% endblock %}
 
 {% block content %}
 
