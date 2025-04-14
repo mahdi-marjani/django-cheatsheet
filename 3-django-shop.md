@@ -203,17 +203,14 @@ my_app/
 ├── apps.py
 ├── models.py
 ├── tests.py
-├── urls.py
 ├── views.py
-├── migrations/
-│   └── __init__.py
-├── static/
+├── static/                    # static files folder
 │   └── my_app/
 │       └── img/
-│           └── example.jpg
+│           └── example.jpg    # static file
 └── templates/
     └── my_app/
-        └── template.html
+        └── template.html      # use static file
 ```
 template.html:
 ```html
