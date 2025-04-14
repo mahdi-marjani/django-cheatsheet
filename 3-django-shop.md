@@ -5,6 +5,7 @@
 - [custom user admin](#custom-user-admin)
 - [sessions](#sessions)
 - [static files](#static-files)
+- [media files](#media-files)
 
 
 
@@ -261,5 +262,47 @@ base.html:
     <title>Online Shop</title>
     <link rel="stylesheet" href="{% static 'css/base_styles.css' %}">    # use global static file
 </head>
+```
+#
+### media files:
+settings file:
+```python
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+```
+models.py:
+```python
+image = models.ImageField(upload_to='products/%Y/%m/%d/')
+```
+tree:
+```text
+shop
+├── db.sqlite3
+├── manage.py
+├── utils.py
+│
+├───shop
+│   ├── asgi.py
+│   ├── settings.py                        # settings file
+│   ├── urls.py
+│   ├── wsgi.py
+│   └─── __init__.py
+│
+├───products
+│   ├── admin.py
+│   ├── apps.py
+│   ├── models.py                          # models.py
+│   ├── tests.py
+│   ├── urls.py
+│   ├── views.py
+│   └─── __init__.py
+│
+└───media
+    └───products
+        └───2025
+            └───04
+                └───14
+                    └─── image.png         # media file
 ```
 #
