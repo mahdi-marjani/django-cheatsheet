@@ -228,5 +228,38 @@ STATICFILES_DIRS = [
 ```
 tree:
 ```text
+my_project
+├── db.sqlite3
+├── manage.py
+├── utils.py
+│
+├───my_project
+│   ├── asgi.py
+│   ├── settings.py
+│   ├── urls.py
+│   ├── wsgi.py
+│   └─── __init__.py
+│
+├───static                        # global static files folder
+│   └───css
+│       └─── base_styles.css      # global static file
+│
+└───templates
+    ├── base.html                 # use global static file
+    │
+    └───inc
+        ├── messages.html
+        └─── navbar.html
+```
+base.html:
+```html
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Online Shop</title>
+    <link rel="stylesheet" href="{% static 'css/base_styles.css' %}">    # use global static file
+</head>
 ```
 #
