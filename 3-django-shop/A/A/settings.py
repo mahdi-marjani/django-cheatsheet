@@ -148,7 +148,7 @@ STORAGES = {
 }
 
 AWS_ACCESS_KEY_ID = 'd8bcab89-d3d9-4647-a859-e957eb871f6b'
-AWS_SECRET_ACCESS_KEY = ''                                      # Your secret access key
+AWS_SECRET_ACCESS_KEY = '25bd863495dcd1c360cac74e270c60332c49c04e742eaafc1ac68e53b703cad2'
 AWS_S3_ENDPOINT_URL = 'https://s3.ir-thr-at1.arvanstorage.ir'
 AWS_STORAGE_BUCKET_NAME = 'django-shop-mahdi'
 AWS_S3_SIGNATURE_VERSION = 's3'
