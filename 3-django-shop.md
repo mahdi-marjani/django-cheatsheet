@@ -6,6 +6,7 @@
 - [sessions](#sessions)
 - [static files](#static-files)
 - [media files](#media-files)
+- [cloud storage](#cloud-storage)
 
 
 
@@ -304,5 +305,44 @@ shop
             └───04
                 └───14
                     └─── image.png         # media file
+```
+#
+### cloud storage:
+packages:
+```bash
+pip install django-storages
+pip install boto3
+```
+settings.py:
+```python
+...
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'storages',                        # add storages
+]
+...
+# Arvancloud Storage (like Amazon S3)
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+AWS_ACCESS_KEY_ID = '***'
+AWS_SECRET_ACCESS_KEY = '***'
+AWS_S3_ENDPOINT_URL = 'https://s3.ir-thr-at1.arvanstorage.ir'
+AWS_STORAGE_BUCKET_NAME = '***'
+AWS_S3_SIGNATURE_VERSION = 's3'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+...
 ```
 #
