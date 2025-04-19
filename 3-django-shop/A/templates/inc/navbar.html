@@ -9,6 +9,9 @@
                 <a class="nav-link active" href="{% url 'accounts:user_register' %}">Register</a>
                 <a class="nav-link active" href="{% url 'accounts:user_login' %}">Login</a>
             {% endif %}
+            {% if user.is_admin %}
+                <a class="nav-link active" href="{% url 'home:bucket' %}">bucket</a>
+            {% endif %}
         </div>
     </div>
 </nav>
