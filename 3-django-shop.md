@@ -7,6 +7,7 @@
 - [static files](#static-files)
 - [media files](#media-files)
 - [cloud storage](#cloud-storage)
+- [initialize celery](#initialize-celery)
 
 
 
@@ -344,5 +345,33 @@ AWS_S3_SIGNATURE_VERSION = 's3'
 AWS_S3_FILE_OVERWRITE = False
 AWS_DEFAULT_ACL = None
 ...
+```
+#
+### initialize celery:
+&lt;project-name&gt;/&lt;project-name&gt;/celery_conf.py:
+```python
+from celery import Celery
+from datetime import timedelta
+import os
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'A.settings')
+
+celery_app = Celery('A')
+celery_app.autodiscover_tasks()
+
+celery_app.conf.update(
+    broker_url='amqp://admin:root@localhost:5672//',
+    result_backend='rpc://',
+    task_serializer='json',
+    result_serializer='pickle',
+    accept_content=['json', 'pickle'],
+    result_expires=timedelta(days=1),
+    task_always_eager=False,
+    worker_prefetch_multiplier=1,
+)
+```
+&lt;project-name&gt;/&lt;project-name&gt;/\_\_init_\_.py:
+```python
+from .celery_conf import celery_app
 ```
 #
