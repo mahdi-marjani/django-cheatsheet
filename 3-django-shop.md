@@ -8,6 +8,7 @@
 - [media files](#media-files)
 - [cloud storage](#cloud-storage)
 - [initialize celery](#initialize-celery)
+- [managing CDN files with AWS S3 in django](#managing-cdn-files-with-aws-s3-in-django)
 
 
 
@@ -375,3 +376,110 @@ celery_app.conf.update(
 from .celery_conf import celery_app
 ```
 #
+### managing CDN files with AWS S3 in django:
+create a `Bucket` class to connect to AWS S3
+&lt;project-name&gt;/bucket.py:
+```python
+import boto3
+from botocore.exceptions import ClientError
+from django.conf import settings # A.settings.py
+import logging
+
+class Bucket:
+    """
+    CDN bucket manager
+    
+    init method creates connection.
+    
+    NOTE:
+        none of these methods are async. use public interface in task.py module instead.
+    """
+    def __init__(self):
+        try:
+            self.s3_resource = boto3.resource(
+                service_name=settings.AWS_S3_SIGNATURE_VERSION,
+                aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                endpoint_url=settings.AWS_S3_ENDPOINT_URL
+            )
+        except Exception as exc:
+            logging.error(exc)
+    
+    def get_objects(self):
+        try:
+            bucket_name = settings.AWS_STORAGE_BUCKET_NAME
+            bucket = self.s3_resource.Bucket(bucket_name)
+            objects = bucket.objects.all()
+            if not objects:
+                logging.info(f"No objects found in bucket: {bucket_name}")
+                return None
+            return objects
+        except ClientError as e:
+            logging.error(e)
+
+
+bucket = Bucket()
+```
+&lt;project-name&gt;/home/tasks.py:
+```python
+from bucket import bucket
+
+
+# TODO: Should be made async
+def all_bucket_objects_task():
+    result = bucket.get_objects()
+    return result
+```
+&lt;project-name&gt;/home/templates/home/bucket.html:
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <table class="table table-dark">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Size</th>
+            <th scope="col">Download</th>
+            <th scope="col">Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for obj in objects %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ obj.key }}</td>
+                <td>{{ obj.size|filesizeformat }}</td>
+                <td>Download</td>
+                <td>Delete</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+```
+&lt;project-name&gt;/home/urls.py:
+```python
+path('bucket', views.BucketHome.as_view(), name='bucket'),
+```
+&lt;project-name&gt;/home/views.py:
+```python
+from .tasks import all_bucket_objects_task
+
+class BucketHome(View):
+    template_name = 'home/bucket.html'
+    
+    def get(self, request):
+        objects = all_bucket_objects_task()
+        return render(request, self.template_name, {'objects': objects})
+```
+&lt;project-name&gt;/templates/inc/navbar.html:
+```html
+{% if user.is_admin %}
+    <!-- The management bucket page link for admin in navbar -->
+    <a class="nav-link active" href="{% url 'home:bucket' %}">bucket</a>
+{% endif %}
+```
