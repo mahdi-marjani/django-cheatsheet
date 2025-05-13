@@ -378,6 +378,7 @@ from .celery_conf import celery_app
 #
 ### managing CDN files with AWS S3 in django:
 create a `Bucket` class to connect to AWS S3
+
 &lt;project-name&gt;/bucket.py:
 ```python
 import boto3
