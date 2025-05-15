@@ -8,7 +8,8 @@
 - [media files](#media-files)
 - [cloud storage](#cloud-storage)
 - [initialize celery](#initialize-celery)
-- [managing CDN files with AWS S3 in django](#managing-cdn-files-with-aws-s3-in-django)
+- [initialize bucket](#initialize-bucket)
+- [bucket content](#bucket-content)
 
 
 
@@ -376,14 +377,14 @@ celery_app.conf.update(
 from .celery_conf import celery_app
 ```
 #
-### managing CDN files with AWS S3 in django:
+### initialize bucket:
 create a `Bucket` class to connect to AWS S3
 
 &lt;project-name&gt;/bucket.py:
 ```python
 import boto3
 from botocore.exceptions import ClientError
-from django.conf import settings # A.settings.py
+from django.conf import settings                # A.settings.py
 import logging
 
 class Bucket:
@@ -391,7 +392,7 @@ class Bucket:
     CDN bucket manager
     
     init method creates connection.
-    
+
     NOTE:
         none of these methods are async. use public interface in task.py module instead.
     """
@@ -405,7 +406,14 @@ class Bucket:
             )
         except Exception as exc:
             logging.error(exc)
-    
+```
+#
+### bucket content:
+&lt;project-name&gt;/bucket.py:
+```python
+...
+class Bucket:
+    ...
     def get_objects(self):
         try:
             bucket_name = settings.AWS_STORAGE_BUCKET_NAME
@@ -421,6 +429,7 @@ class Bucket:
 
 bucket = Bucket()
 ```
+
 &lt;project-name&gt;/home/tasks.py:
 ```python
 from bucket import bucket
@@ -484,3 +493,4 @@ class BucketHome(View):
     <a class="nav-link active" href="{% url 'home:bucket' %}">bucket</a>
 {% endif %}
 ```
+#
