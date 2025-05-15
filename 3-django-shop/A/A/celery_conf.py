@@ -8,7 +8,7 @@ celery_app = Celery('A')
 celery_app.autodiscover_tasks()
 
 celery_app.conf.update(
-    broker_url='amqp://admin:root@localhost:5672//',
+    broker_url='amqp://',
     result_backend='rpc://',
     task_serializer='json',
     result_serializer='pickle',

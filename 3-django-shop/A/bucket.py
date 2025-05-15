@@ -34,6 +34,13 @@ class Bucket:
             return objects
         except ClientError as e:
             logging.error(e)
-
+    
+    def delete_object(self, key):
+        self.s3_resource.meta.client.delete_object(
+            Bucket=settings.AWS_STORAGE_BUCKET_NAME,
+            Key=key
+        )
+        return True
+        
 
 bucket = Bucket()
