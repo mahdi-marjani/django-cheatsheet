@@ -554,4 +554,15 @@ class DeleteBucketObject(View):
         messages.success(request, f"your object {key} will be deleted soon.", 'info')
         return redirect('home:bucket')
 ```
+models.py:
+```python
+image = models.ImageField()    # without upload_to
+```
+&lt;project-name&gt;/&lt;project-name&gt;/celery_conf.py:
+```python
+celery_app.conf.update(
+    broker_url='amqp://',    # without additional address (for local celery)
+    ...
+)
+```
 #
