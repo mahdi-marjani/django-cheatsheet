@@ -1,3 +1,4 @@
 Django==4.2.21
 boto3==1.38.27
 celery==5.5.2
+django-storages==1.14.6
