@@ -8,6 +8,7 @@
 - [media files](#media-files)
 - [cloud storage](#cloud-storage)
 - [initialize celery](#initialize-celery)
+- [run celery](#run-celery)
 - [initialize bucket](#initialize-bucket)
 - [bucket content](#bucket-content)
 - [delete bucket object](#delete-bucket-object)
@@ -377,6 +378,14 @@ celery_app.conf.update(
 ```python
 from .celery_conf import celery_app
 ```
+#
+### run celery:
+```bash
+celery -A A worker -l INFO --pool=solo
+```
+* `-A A`: Argument to specify the app name (in this case, `A` -> `<project-name>/<project-name>`)
+* `-l INFO`: Log level (INFO for standard output)
+* `--pool=solo`: Switch to set the pool type to `solo` (required on Windows)
 #
 ### initialize bucket:
 create a `Bucket` class to connect to AWS S3
