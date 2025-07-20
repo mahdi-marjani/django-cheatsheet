@@ -3,6 +3,9 @@ from django.views import View
 from .models import Product
 from . import tasks
 from django.contrib import messages
+from .forms import UploadFileForm
+from django.conf import settings # A.settings.py
+import os
 
 class HomeView(View):
     def get(self, request):
@@ -18,8 +21,29 @@ class BucketHome(View):
     template_name = 'home/bucket.html'
     
     def get(self, request):
+        form = UploadFileForm()
         objects = tasks.all_bucket_objects_task()
-        return render(request, self.template_name, {'objects': objects})
+        return render(request, self.template_name, {'objects': objects, 'form': form})
+    
+    def post(self, request):
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = request.FILES["file"]
+            filename = file.name
+            upload_dir = os.path.join(settings.MEDIA_ROOT, "uploads")
+
+            if not os.path.exists(upload_dir):
+                os.makedirs(upload_dir)
+
+            path = os.path.join(settings.MEDIA_ROOT, "uploads", filename)
+
+            with open(path, "wb+") as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+
+            tasks.upload_object_task.delay(path, filename)
+            messages.success(request, f"Uploading {filename} ...", 'info')
+            return redirect('home:bucket')
 
 class DeleteBucketObject(View):
     def get(self, request, key):

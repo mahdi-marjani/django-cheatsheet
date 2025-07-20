@@ -2,6 +2,14 @@
 
 {% block content %}
 
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <input type="submit" value="Upload">
+    </form>
+
+    <br>
+
     <table class="table table-dark">
         <thead>
         <tr>
