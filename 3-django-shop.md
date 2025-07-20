@@ -8,9 +8,11 @@
 - [media files](#media-files)
 - [cloud storage](#cloud-storage)
 - [initialize celery](#initialize-celery)
+- [run celery](#run-celery)
 - [initialize bucket](#initialize-bucket)
 - [bucket content](#bucket-content)
 - [delete bucket object](#delete-bucket-object)
+- [download bucket object](#download-bucket-object)
 
 
 
@@ -378,6 +380,14 @@ celery_app.conf.update(
 from .celery_conf import celery_app
 ```
 #
+### run celery:
+```bash
+celery -A A worker -l INFO --pool=solo
+```
+* `-A A`: Argument to specify the app name (in this case, `A` -> `<project-name>/<project-name>`)
+* `-l INFO`: Log level (INFO for standard output)
+* `--pool=solo`: Switch to set the pool type to `solo` (required on Windows)
+#
 ### initialize bucket:
 create a `Bucket` class to connect to AWS S3
 
@@ -532,7 +542,7 @@ app_name = 'home'
 
 bucket_urls = [
     path('', views.BucketHome.as_view(), name='bucket'),
-    path('delete_obj_bucket/<str:key>', views.DeleteBucketObject.as_view(), name='delete_obj_bucket'), # delete object bucket path
+    path('delete_obj/<str:key>', views.DeleteBucketObject.as_view(), name='delete_obj_bucket'), # delete object bucket path
 ]
 
 urlpatterns = [
@@ -564,5 +574,50 @@ celery_app.conf.update(
     broker_url='amqp://',    # without additional address (for local celery)
     ...
 )
+```
+#
+### download bucket object:
+&lt;project-name&gt;/home/urls.py:
+```python
+bucket_urls = [
+    path('', views.BucketHome.as_view(), name='bucket'),
+    path('delete_obj_bucket/<str:key>', views.DeleteBucketObject.as_view(), name='delete_obj_bucket'),
+    path('download_obj_bucket/<str:key>', views.DownloadBucketObject.as_view(), name='download_obj_bucket'), # download url
+]
+```
+&lt;project-name&gt;/&lt;project-name&gt;/settings.py:
+```python
+...
+AWS_LOCAL_STORAGE = f'{BASE_DIR}/aws/'
+```
+&lt;project-name&gt;/bucket.py:
+```python
+...
+class Bucket:
+    ...
+    def download_object(self, key):
+        with open(settings.AWS_LOCAL_STORAGE + key, 'wb') as f:
+            self.s3_resource.Bucket(settings.AWS_STORAGE_BUCKET_NAME).download_fileobj(key, f)
+...
+```
+&lt;project-name&gt;/home/tasks.py:
+```python
+...
+@shared_task
+def download_object_task(key):
+    bucket.download_object(key)
+```
+&lt;project-name&gt;/home/views.py:
+```python
+...
+class DownloadBucketObject(View):
+    def get(self, request, key):
+        tasks.download_object_task.delay(key)
+        messages.success(request, f"your object {key} will be downloaded soon.", 'info')
+        return redirect('home:bucket')
+```
+&lt;project-name&gt;/home/templates/home/bucket.html:
+```html
+<td><a href="{% url 'home:download_obj_bucket' obj.key %}">download</a></td>
 ```
 #
