@@ -13,6 +13,7 @@
 - [bucket content](#bucket-content)
 - [delete bucket object](#delete-bucket-object)
 - [download bucket object](#download-bucket-object)
+- [upload bucket object](#upload-bucket-object)
 
 
 
@@ -619,5 +620,81 @@ class DownloadBucketObject(View):
 &lt;project-name&gt;/home/templates/home/bucket.html:
 ```html
 <td><a href="{% url 'home:download_obj_bucket' obj.key %}">download</a></td>
+```
+#
+### upload bucket object:
+&lt;project-name&gt;/bucket.py:
+```python
+...
+class Bucket:
+    ...
+    def upload_object(self, file, obj_name):
+        self.s3_resource.Bucket(settings.AWS_STORAGE_BUCKET_NAME).put_object(
+            ACL='private',
+            Body=file,
+            Key=obj_name
+        )
+...
+```
+&lt;project-name&gt;/home/tasks.py:
+```python
+...
+@shared_task
+def upload_object_task(filepath, obj_name):
+    with open(filepath, "rb") as f:
+        bucket.upload_object(f, obj_name)
+    os.remove(filepath)
+```
+&lt;project-name&gt;/home/forms.py:
+```python
+from django import forms
+
+class UploadFileForm(forms.Form):
+    file = forms.FileField()
+```
+&lt;project-name&gt;/home/templates/home/bucket.html:
+```html
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Upload">
+</form>
+```
+&lt;project-name&gt;/home/views.py:
+```python
+...
+from .forms import UploadFileForm
+from django.conf import settings # A.settings.py
+import os
+
+...
+class BucketHome(View):
+    template_name = 'home/bucket.html'
+    
+    def get(self, request):
+        form = UploadFileForm()
+        objects = tasks.all_bucket_objects_task()
+        return render(request, self.template_name, {'objects': objects, 'form': form})
+    
+    def post(self, request):
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            file = request.FILES["file"]
+            filename = file.name
+            upload_dir = os.path.join(settings.MEDIA_ROOT, "uploads")
+
+            if not os.path.exists(upload_dir):
+                os.makedirs(upload_dir)
+
+            path = os.path.join(settings.MEDIA_ROOT, "uploads", filename)
+
+            with open(path, "wb+") as destination:
+                for chunk in file.chunks():
+                    destination.write(chunk)
+
+            tasks.upload_object_task.delay(path, filename)
+            messages.success(request, f"Uploading {filename} ...", 'info')
+            return redirect('home:bucket')
+...
 ```
 #
