@@ -3,12 +3,12 @@ from django.http import HttpResponse, JsonResponse
 from django.views import View
 from .forms import UserRegistrationForm, verifyCodeForm, UserLoginForm
 import random
-from utils import send_otp_code
 from .models import OtpCode, User
 from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth import authenticate, login, logout
+from . import tasks
 
 
 class UserRegisterView(View):
@@ -24,7 +24,7 @@ class UserRegisterView(View):
         if form.is_valid():
             random_code = random.randint(1000, 9999)
             phone = form.cleaned_data['phone']
-            send_otp_code(phone, random_code)
+            tasks.send_otp_code_task.delay(phone, random_code)
             OtpCode.objects.update_or_create(
                 phone_number=phone,
                 defaults={'code': random_code}
@@ -99,7 +99,7 @@ class ResendOtpView(View):
             return redirect('accounts:verify_code')
         
         random_code = random.randint(1000, 9999)
-        send_otp_code(user_session['phone_number'], random_code)
+        tasks.send_otp_code_task.delay(user_session['phone_number'], random_code)
         
         code_instance.code = random_code
         code_instance.save()
