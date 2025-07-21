@@ -389,7 +389,7 @@ from .celery_conf import celery_app
 ```bash
 celery -A A worker -l INFO --pool=solo
 ```
-* `-A A`: Argument to specify the app name (in this case, `A` -> `<project-name>/<project-name>`)
+* `-A A`: Replace `A` with your project name (the folder where `settings.py` is located)
 * `-l INFO`: Log level (INFO for standard output)
 * `--pool=solo`: Switch to set the pool type to `solo` (required on Windows)
 #
@@ -795,6 +795,10 @@ INSTALLED_APPS = (
     'django_celery_beat',
 )
 ```
+migrate:
+```bash
+python manage.py migrate
+```
 &lt;project-name&gt;/accounts/tasks.py:
 ```python
 ...
@@ -810,4 +814,10 @@ def remove_expired_otps():
     OtpCode.objects.filter(created__lt=expired_time).delete()
 ```
 Go to the admin panel, add a new periodic task, and set the schedule (like every minute) for `accounts.tasks.remove_expired_otps`
+
+run celery beat:
+```bash
+celery -A A beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+```
+* `-A A`: Replace `A` with your project name (the folder where `settings.py` is located)
 #
