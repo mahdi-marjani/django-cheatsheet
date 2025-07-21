@@ -358,6 +358,10 @@ AWS_DEFAULT_ACL = None
 ```
 #
 ### initialize celery:
+packages:
+```bash
+pip install celery
+```
 &lt;project-name&gt;/&lt;project-name&gt;/celery_conf.py:
 ```python
 from celery import Celery
@@ -813,7 +817,7 @@ def remove_expired_otps():
     expired_time = timezone.now() - timedelta(minutes=2)
     OtpCode.objects.filter(created__lt=expired_time).delete()
 ```
-Go to the admin panel, add a new periodic task, and set the schedule (like every minute) for `accounts.tasks.remove_expired_otps`
+Go to the `admin panel`, add a new periodic task, and set the schedule (like every minute) for `accounts.tasks.remove_expired_otps`
 
 run celery beat:
 ```bash
