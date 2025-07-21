@@ -9,6 +9,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.contrib.auth import authenticate, login, logout
 from . import tasks
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class UserRegisterView(View):
@@ -131,11 +132,11 @@ class UserLoginView(View):
                     return redirect(self.next)
                 return redirect('home:home')
             else:
-                messages.error(request, 'Invalid credentials', 'danger')
+                messages.error(request, 'phone or password is wrong', 'danger')
                 return render(request, self.template_name, {'form': form})
         return render(request, self.template_name, {'form': form})
 
-class UserLogoutView(View):    
+class UserLogoutView(UserLoginForm, View):    
     def get(self, request):
         logout(request)
         messages.success(request, 'User logged out successfully!', extra_tags='success')
