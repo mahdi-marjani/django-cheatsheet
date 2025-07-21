@@ -16,6 +16,7 @@
 - [upload bucket object](#upload-bucket-object)
 - [async send_otp_code](#async-send_otp_code)
 - [write custom mixin](#write-custom-mixin)
+- [custom management command](#custom-management-command)
 
 
 
@@ -741,5 +742,43 @@ class BucketHome(IsAdminUserMixin, View):
 class DeleteBucketObject(IsAdminUserMixin, View):
 ...
 class DownloadBucketObject(IsAdminUserMixin, View):
+```
+#
+### custom management command:
+tree:
+```text
+accounts/                                 # app
+├── __init__.py
+├── admin.py
+├── apps.py
+├── models.py
+├── tests.py
+├── views.py
+└── management/
+    ├── __init__.py
+    └── commands/
+        ├── __init__.py
+        └── remove_expired_otps.py        # custom management command
+```
+&lt;project-name&gt;/accounts/management/commands/remove_expired_otps.py:
+```python
+from django.core.management.base import BaseCommand
+from accounts.models import OtpCode
+from datetime import datetime, timedelta
+from django.utils import timezone
+
+class Command(BaseCommand):
+    help = "remove all expired otp codes"
+
+    def handle(self, *args, **options):
+        expired_time = timezone.now() - timedelta(minutes=2)
+        OtpCode.objects.filter(created__lt=expired_time).delete()
+        self.stdout.write(
+            self.style.SUCCESS('all expired otp codes removed.')
+        )
+```
+run custom management command:
+```bash
+python manage.py remove_expired_otps
 ```
 #
