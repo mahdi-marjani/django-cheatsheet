@@ -18,7 +18,7 @@
 - [write custom mixin](#write-custom-mixin)
 - [custom management command](#custom-management-command)
 - [use celery beat](#use-celery-beat)
-- [run celery in background](run-celery-in-background)
+- [run celery in background](#run-celery-in-background)
 
 
 
