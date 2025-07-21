@@ -840,7 +840,7 @@ touch /etc/supervisor/conf.d/project_name.conf
 4. write supervisor configuration:
 ```ini
 [program:project_name]
-user=user    # optional; if not set, it uses the default user running supervisord
+user=user
 directory=/var/www/myproject/src/
 command=/var/www/myproject/bin/celery -A myproject worker -l info
 numprocs=1
