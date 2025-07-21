@@ -18,6 +18,7 @@
 - [write custom mixin](#write-custom-mixin)
 - [custom management command](#custom-management-command)
 - [use celery beat](#use-celery-beat)
+- [run celery in background](#run-celery-in-background)
 
 
 
@@ -358,6 +359,10 @@ AWS_DEFAULT_ACL = None
 ```
 #
 ### initialize celery:
+packages:
+```bash
+pip install celery
+```
 &lt;project-name&gt;/&lt;project-name&gt;/celery_conf.py:
 ```python
 from celery import Celery
@@ -389,7 +394,7 @@ from .celery_conf import celery_app
 ```bash
 celery -A A worker -l INFO --pool=solo
 ```
-* `-A A`: Argument to specify the app name (in this case, `A` -> `<project-name>/<project-name>`)
+* `-A A`: Replace `A` with your project name (the folder where `settings.py` is located)
 * `-l INFO`: Log level (INFO for standard output)
 * `--pool=solo`: Switch to set the pool type to `solo` (required on Windows)
 #
@@ -795,6 +800,10 @@ INSTALLED_APPS = (
     'django_celery_beat',
 )
 ```
+migrate:
+```bash
+python manage.py migrate
+```
 &lt;project-name&gt;/accounts/tasks.py:
 ```python
 ...
@@ -809,5 +818,53 @@ def remove_expired_otps():
     expired_time = timezone.now() - timedelta(minutes=2)
     OtpCode.objects.filter(created__lt=expired_time).delete()
 ```
-Go to the admin panel, add a new periodic task, and set the schedule (like every minute) for `accounts.tasks.remove_expired_otps`
+Go to the `admin panel`, add a new periodic task, and set the schedule (like every minute) for `accounts.tasks.remove_expired_otps`
+
+run celery beat:
+```bash
+celery -A A beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+```
+* `-A A`: Replace `A` with your project name (the folder where `settings.py` is located)
+#
+### run celery in background:
+1. install supervisor:
+```bash
+sudo apt-get install supervisor
+```
+2. all supervisor processes goes here:
+`/etc/supervisor/conf.d`
+3. create project's celery configuration file for supervisor:
+```bash
+touch /etc/supervisor/conf.d/project_name.conf
+```
+4. write supervisor configuration:
+```ini
+[program:project_name]
+user=user
+directory=/var/www/myproject/src/
+command=/var/www/myproject/bin/celery -A myproject worker -l info
+numprocs=1
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/myproject/celery.log
+stderr_logfile=/var/log/myproject/celery.err.log
+```
+5. create log files:
+```bash
+touch /var/log/myproject/celery.log
+```
+```bash
+touch /var/log/myproject/celery.err.log
+```
+6. update supervisor configuration:
+```bash
+supervisorctl reread
+```
+```bash
+supervisorctl update
+```
+7. done:
+```bash
+supervisorctl {status|start|stop|restart} project_name
+```
 #
