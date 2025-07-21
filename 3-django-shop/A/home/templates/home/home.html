@@ -10,7 +10,7 @@
 {% block content %}
 
     {% for product in products %}
-        <div class="card" style="width: 18rem;">
+        <div class="card" style="width: 18rem; display: inline-block;">
             <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}">
             <div class="card-body">
               <h5 class="card-title">{{ product.name }}</h5>
