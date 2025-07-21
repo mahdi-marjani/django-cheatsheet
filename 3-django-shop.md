@@ -18,6 +18,7 @@
 - [write custom mixin](#write-custom-mixin)
 - [custom management command](#custom-management-command)
 - [use celery beat](#use-celery-beat)
+- [run celery in background](run-celery-in-background)
 
 
 
@@ -824,4 +825,46 @@ run celery beat:
 celery -A A beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
 ```
 * `-A A`: Replace `A` with your project name (the folder where `settings.py` is located)
+#
+### run celery in background:
+1. install supervisor:
+```bash
+sudo apt-get install supervisor
+```
+2. all supervisor processes goes here:
+`/etc/supervisor/conf.d`
+3. create project's celery configuration file for supervisor:
+```bash
+touch /etc/supervisor/conf.d/project_name.conf
+```
+4. write supervisor configuration:
+```ini
+[program:project_name]
+user=user    # optional; if not set, it uses the default user running supervisord
+directory=/var/www/myproject/src/
+command=/var/www/myproject/bin/celery -A myproject worker -l info
+numprocs=1
+autostart=true
+autorestart=true
+stdout_logfile=/var/log/myproject/celery.log
+stderr_logfile=/var/log/myproject/celery.err.log
+```
+5. create log files:
+```bash
+touch /var/log/myproject/celery.log
+```
+```bash
+touch /var/log/myproject/celery.err.log
+```
+6. update supervisor configuration:
+```bash
+supervisorctl reread
+```
+```bash
+supervisorctl update
+```
+7. done:
+```bash
+supervisorctl {status|start|stop|restart} project_name
+```
 #
