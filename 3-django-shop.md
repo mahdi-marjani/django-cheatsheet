@@ -15,6 +15,7 @@
 - [download bucket object](#download-bucket-object)
 - [upload bucket object](#upload-bucket-object)
 - [async send_otp_code](#async-send_otp_code)
+- [write custom mixin](#write-custom-mixin)
 
 
 
@@ -716,5 +717,29 @@ tasks.send_otp_code_task.delay(phone, random_code)                            # 
 ...
 # send_otp_code(user_session['phone_number'], random_code)
 tasks.send_otp_code_task.delay(user_session['phone_number'], random_code)     # New: async version
+```
+#
+### write custom mixin:
+&lt;project-name&gt;/utils.py:
+```python
+from django.contrib.auth.mixins import UserPassesTestMixin
+
+...
+
+class IsAdminUserMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.is_admin
+```
+&lt;project-name&gt;/home/views.py:
+```python
+...
+from utils import IsAdminUserMixin
+
+...
+class BucketHome(IsAdminUserMixin, View):
+...
+class DeleteBucketObject(IsAdminUserMixin, View):
+...
+class DownloadBucketObject(IsAdminUserMixin, View):
 ```
 #
