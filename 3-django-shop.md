@@ -17,6 +17,7 @@
 - [async send_otp_code](#async-send_otp_code)
 - [write custom mixin](#write-custom-mixin)
 - [custom management command](#custom-management-command)
+- [use celery beat](#use-celery-beat)
 
 
 
@@ -781,4 +782,32 @@ run custom management command:
 ```bash
 python manage.py remove_expired_otps
 ```
+#
+### use celery beat:
+packages:
+```bash
+pip install django-celery-beat
+```
+settings.py:
+```python
+INSTALLED_APPS = (
+    ...
+    'django_celery_beat',
+)
+```
+&lt;project-name&gt;/accounts/tasks.py:
+```python
+...
+from celery import shared_task
+from accounts.models import OtpCode
+from django.utils import timezone
+from datetime import timedelta
+
+...
+@shared_task
+def remove_expired_otps():
+    expired_time = timezone.now() - timedelta(minutes=2)
+    OtpCode.objects.filter(created__lt=expired_time).delete()
+```
+Go to the admin panel, add a new periodic task, and set the schedule (like every minute) for `accounts.tasks.remove_expired_otps`
 #
