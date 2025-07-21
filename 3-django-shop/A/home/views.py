@@ -6,6 +6,7 @@ from django.contrib import messages
 from .forms import UploadFileForm
 from django.conf import settings # A.settings.py
 import os
+from utils import IsAdminUserMixin
 
 class HomeView(View):
     def get(self, request):
@@ -17,7 +18,7 @@ class ProductDetailView(View):
         product = get_object_or_404(Product, slug=slug)
         return render(request, 'home/detail.html', {'product': product})
 
-class BucketHome(View):
+class BucketHome(IsAdminUserMixin, View):
     template_name = 'home/bucket.html'
     
     def get(self, request):
@@ -45,13 +46,13 @@ class BucketHome(View):
             messages.success(request, f"Uploading {filename} ...", 'info')
             return redirect('home:bucket')
 
-class DeleteBucketObject(View):
+class DeleteBucketObject(IsAdminUserMixin, View):
     def get(self, request, key):
         tasks.delete_object_task.delay(key)
         messages.success(request, f"your object {key} will be deleted soon.", 'info')
         return redirect('home:bucket')
     
-class DownloadBucketObject(View):
+class DownloadBucketObject(IsAdminUserMixin, View):
     def get(self, request, key):
         tasks.download_object_task.delay(key)
         messages.success(request, f"your object {key} will be downloaded soon.", 'info')
