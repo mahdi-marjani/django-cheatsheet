@@ -14,6 +14,7 @@
 - [delete bucket object](#delete-bucket-object)
 - [download bucket object](#download-bucket-object)
 - [upload bucket object](#upload-bucket-object)
+- [async send_otp_code](#async-send_otp_code)
 
 
 
@@ -696,5 +697,24 @@ class BucketHome(View):
             messages.success(request, f"Uploading {filename} ...", 'info')
             return redirect('home:bucket')
 ...
+```
+#
+### async send_otp_code:
+&lt;project-name&gt;/accounts/tasks.py:
+```python
+from celery import shared_task
+from utils import send_otp_code
+
+@shared_task
+def send_otp_code_task(phone, random_code):
+    send_otp_code(phone, random_code)
+```
+&lt;project-name&gt;/accounts/views.py:
+```python
+# send_otp_code(phone, random_code)
+tasks.send_otp_code_task.delay(phone, random_code)                            # New: async version
+...
+# send_otp_code(user_session['phone_number'], random_code)
+tasks.send_otp_code_task.delay(user_session['phone_number'], random_code)     # New: async version
 ```
 #
