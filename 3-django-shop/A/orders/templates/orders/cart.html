@@ -20,6 +20,11 @@
         <td>{{ item.total_price }}</td>
       </tr>
     {% endfor %}
+    <tr>
+      <td>Total</td>
+      <td colspan="3"></td>
+      <td>{{ cart.get_total_price }}</td>
+    </tr>
   </tbody>
 </table>
 {% endblock %}
