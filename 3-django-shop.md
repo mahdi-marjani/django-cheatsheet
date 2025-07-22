@@ -19,6 +19,7 @@
 - [custom management command](#custom-management-command)
 - [use celery beat](#use-celery-beat)
 - [run celery in background](#run-celery-in-background)
+- [context processors](#context-processors)
 
 
 
@@ -866,5 +867,55 @@ supervisorctl update
 7. done:
 ```bash
 supervisorctl {status|start|stop|restart} project_name
+```
+#
+### context processors:
+&lt;project-name&gt;/orders/cart.py:
+```python
+...
+
+class Cart:
+    ...
+    
+    def __len__(self):
+        return sum(item['quantity'] for item in self.cart.values())    # Returns the total quantity of all items in the cart
+
+    ...
+```
+&lt;project-name&gt;/orders/context_processors.py:
+```python
+from .cart import Cart
+
+def cart_func(request):                # Makes the Cart object globally available to all templates
+    return {'cart': Cart(request)}
+```
+&lt;project-name&gt;/&lt;project-name&gt;/settings.py:
+```python
+TEMPLATES = [
+    {
+        ...
+        'OPTIONS': {
+            'context_processors': [
+                ...
+                'orders.context_processors.cart_func'    # Add 'cart' to context of all templates via cart_func
+            ],
+        },
+    },
+]
+```
+&lt;project-name&gt;/templates/inc/navbar.html:
+```html
+<nav class="navbar navbar-expand-lg text-bg-info">
+    <div class="container-fluid">
+        <div class="navbar-nav">
+            ...
+
+            <!-- ✅ Displays the cart link with item count using the globally available 'cart' object -->
+            <a class="nav-link active" href="{% url 'orders:cart' %}">Cart {{ cart|length }}</a>
+
+
+        </div>
+    </div>
+</nav>
 ```
 #
