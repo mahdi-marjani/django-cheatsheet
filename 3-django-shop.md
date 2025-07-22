@@ -910,7 +910,7 @@ TEMPLATES = [
         <div class="navbar-nav">
             ...
 
-            <!-- ✅ Displays the cart link with item count using the globally available 'cart' object -->
+            <!-- ✅ Show cart link with item count using the globally available 'cart' object -->
             <a class="nav-link active" href="{% url 'orders:cart' %}">Cart {{ cart|length }}</a>
 
 
