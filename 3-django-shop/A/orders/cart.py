@@ -17,7 +17,7 @@ class Cart:
         cart = self.cart.copy()
         
         for product in products:
-            cart[str(product.id)]['product'] = product.name
+            cart[str(product.id)]['product'] = product
         
         for item in cart.values():
             item['total_price'] = int(item['price']) * item['quantity']
@@ -29,6 +29,13 @@ class Cart:
             self.cart[product_id] = {'quantity': 0, 'price': str(product.price)}
         self.cart[product_id]['quantity'] += quantity
         self.save()
+    
+    def remove(self, product):
+        product_id = str(product.id)
+        if product_id in self.cart:
+            del self.cart[product_id]
+            self.save()
+
         
     def save(self):
         self.session.modified = True
