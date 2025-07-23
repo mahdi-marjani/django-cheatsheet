@@ -20,6 +20,7 @@
 - [use celery beat](#use-celery-beat)
 - [run celery in background](#run-celery-in-background)
 - [context processors](#context-processors)
+- [validators](#validators)
 
 
 
@@ -917,5 +918,22 @@ TEMPLATES = [
         </div>
     </div>
 </nav>
+```
+#
+### validators:
+&lt;project-name&gt;/orders/models.py:
+```python
+...
+from django.core.validators import MinValueValidator, MaxValueValidator    # import built-in validators to limit value range
+from django.db import models
+
+...
+class Coupon(models.Model):
+    ...
+
+    # ✅ ensure discount is between 0% and 90%
+    discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(90)])
+
+    ...
 ```
 #
