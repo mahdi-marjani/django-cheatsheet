@@ -943,16 +943,16 @@ class Coupon(models.Model):
 ```python
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 
-class User(AbstractBaseUser, PermissionsMixin):    # Inherit from PermissionsMixin to enable groups & permissions
+class User(AbstractBaseUser, PermissionsMixin):  # Inherit from PermissionsMixin to enable groups & permissions
     ...
 
-    # def has_perm(self, perm, obj=None):          # no need to define has_perm / has_module_perms — handled by PermissionsMixin
+    # def has_perm(self, perm, obj=None):        # no need to define has_perm / has_module_perms — handled by PermissionsMixin
     #     return True
     # def has_module_perms(self, app_label):
     #     return True
 
     @property
-    def is_staff(self):                            # Allow admin panel access if the user is admin
+    def is_staff(self):                          # Allow admin panel access if the user is admin
         return self.is_admin
 ```
 &lt;project-name&gt;/accounts/admin.py:
