@@ -21,6 +21,7 @@
 - [run celery in background](#run-celery-in-background)
 - [context processors](#context-processors)
 - [validators](#validators)
+- [permissions](#permissions)
 
 
 
@@ -935,5 +936,71 @@ class Coupon(models.Model):
     discount = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(90)])
 
     ...
+```
+#
+### permissions:
+&lt;project-name&gt;/accounts/models.py:
+```python
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+
+class User(AbstractBaseUser, PermissionsMixin):    # Inherit from PermissionsMixin to enable groups & permissions
+    ...
+
+    # def has_perm(self, perm, obj=None):
+    #     return True
+    
+    # def has_module_perms(self, app_label):
+    #     return True
+
+    @property
+    def is_staff(self):                            # Allow admin panel access if the user is admin
+        return self.is_admin
+```
+&lt;project-name&gt;/accounts/admin.py:
+```python
+class UserAdmin(BaseUserAdmin):
+    ...
+
+    fieldsets = (
+        ...
+
+        # Show is_superuser and group and permissions
+        ('Permissions', {'fields': (... 'is_superuser', 'groups', 'user_permissions', ...)}),
+
+    )
+
+    ...
+
+    filter_horizontal = ('groups', 'user_permissions')    # Enable horizontal filter UI for permissions and groups
+
+# admin.site.unregister(Group)                            ← remove this line if you had it before
+...
+```
+check user permissions in templates:
+```html
+{% if perms.app_name.can_do_something %}                  <!-- check user permission -->
+    <form here>
+{% endif %}
+```
+`can_do_something` is a **permission codename**.
+
+Django auto-creates: `add_model`, `change_model`, `delete_model`, `view_model`.
+
+**Example**:
+For `Product` model in `home` app:
+```text
+home.add_product
+home.change_product
+home.delete_product
+home.view_product
+```
+check user permissions in views:
+```python
+class MyView(View):
+    def get(self, request):
+        if request.user.has_perm('app_name.can_do_something'):    # check user permission
+            ...
+        else:
+            return HttpResponseForbidden()
 ```
 #
