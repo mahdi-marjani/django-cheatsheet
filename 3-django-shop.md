@@ -946,9 +946,8 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 class User(AbstractBaseUser, PermissionsMixin):    # Inherit from PermissionsMixin to enable groups & permissions
     ...
 
-    # def has_perm(self, perm, obj=None):
+    # def has_perm(self, perm, obj=None):          # no need to define has_perm / has_module_perms — handled by PermissionsMixin
     #     return True
-    
     # def has_module_perms(self, app_label):
     #     return True
 
@@ -989,7 +988,7 @@ Django auto-creates: `add_model`, `change_model`, `delete_model`, `view_model`.
 **Example**:
 For `Product` model in `home` app:
 ```text
-home.add_product
+home.add_product        # lowercase model name
 home.change_product
 home.delete_product
 home.view_product
