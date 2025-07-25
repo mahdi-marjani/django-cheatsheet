@@ -1017,4 +1017,27 @@ class MyView(PermissionRequiredMixin, View):                        # check user
     def get(self, request):
         ...
 ```
+readonly_fields in admin panel:
+```python
+...
+
+class UserAdmin(BaseUserAdmin):
+    ...
+    readonly_fields = ('last_login',)
+    ...
+```
+***:
+```python
+...
+
+class UserAdmin(BaseUserAdmin):
+    ...
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        is_superuser = request.user.is_superuser
+        if not is_superuser and 'is_superuser' in form.base_fields:
+            form.base_fields['is_superuser'].disabled = True
+        return form
+```
 #
