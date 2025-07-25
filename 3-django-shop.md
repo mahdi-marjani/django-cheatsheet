@@ -963,10 +963,14 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         ...
 
-        # Show is_superuser and group and permissions
-        ('Permissions', {'fields': (... 'is_superuser', 'groups', 'user_permissions', ...)}),
+        
+        (
+            'Permissions',
+            {'fields':
+                (... 'is_superuser', 'groups', 'user_permissions', ...)}    # Show is_superuser and group and permissions
+        ),
 
-    )
+)
 
     ...
 
@@ -997,9 +1001,20 @@ check user permissions in views:
 ```python
 class MyView(View):
     def get(self, request):
-        if request.user.has_perm('app_name.can_do_something'):    # check user permission
+        if request.user.has_perm('app_name.can_do_something'):      # check user permission
             ...
         else:
             return HttpResponseForbidden()
+```
+or:
+```python
+from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.views import View
+
+class MyView(PermissionRequiredMixin, View):                        # check user permission using mixin
+    permission_required = 'app_name.can_do_something'               # required permission codename
+
+    def get(self, request):
+        ...
 ```
 #
