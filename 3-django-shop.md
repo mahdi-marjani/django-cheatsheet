@@ -1023,10 +1023,10 @@ readonly_fields in admin panel:
 
 class UserAdmin(BaseUserAdmin):
     ...
-    readonly_fields = ('last_login',)
+    readonly_fields = ('last_login',)    # show-only (not editable in admin)
     ...
 ```
-***:
+disable is_superuser field for non-superusers:
 ```python
 ...
 
@@ -1036,8 +1036,8 @@ class UserAdmin(BaseUserAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         is_superuser = request.user.is_superuser
-        if not is_superuser and 'is_superuser' in form.base_fields:
-            form.base_fields['is_superuser'].disabled = True
+        if not is_superuser and 'is_superuser' in form.base_fields:    # check superuser status
+            form.base_fields['is_superuser'].disabled = True           # make read-only for non-superusers
         return form
 ```
 #
