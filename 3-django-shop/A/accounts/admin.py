@@ -13,6 +13,7 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreationForm
     list_display = ('email', 'phone_number', 'is_admin')
     list_filter = ('is_admin',)
+    readonly_fields = ('last_login',)
 
     fieldsets = (
         ('Main', {'fields': ('email', 'phone_number', 'full_name', 'password')}),
@@ -26,6 +27,13 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email', 'full_name')
     ordering = ('full_name',)
     filter_horizontal = ('groups', 'user_permissions')
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        is_superuser = request.user.is_superuser
+        if not is_superuser and 'is_superuser' in form.base_fields:
+            form.base_fields['is_superuser'].disabled = True
+        return form
     
 # admin.site.unregister(Group)
 admin.site.register(User, UserAdmin)
