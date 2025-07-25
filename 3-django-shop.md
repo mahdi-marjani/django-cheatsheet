@@ -22,6 +22,7 @@
 - [context processors](#context-processors)
 - [validators](#validators)
 - [permissions](#permissions)
+- [postgresql](#postgresql)
 
 
 
@@ -1041,3 +1042,12 @@ class UserAdmin(BaseUserAdmin):
         return form
 ```
 #
+### postgresql:
+packages:
+```bash
+pip install psycopg2
+```
+settings.py:
+```python
+
+```
