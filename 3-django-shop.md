@@ -1045,6 +1045,10 @@ class UserAdmin(BaseUserAdmin):
 ### postgresql:
 packages:
 ```bash
+# for development
+pip install psycopg2-binary
+
+# for production (recommended)
 pip install psycopg2
 ```
 settings.py:
@@ -1072,6 +1076,8 @@ DATABASES = {
         },
     }
 }
+
+...
 ```
 in linux/macOS:
 ```python
