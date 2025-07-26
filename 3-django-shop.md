@@ -1049,5 +1049,60 @@ pip install psycopg2
 ```
 settings.py:
 ```python
+...
+from pathlib import Path
+import os
+import platform
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+...
+
+HOME_DIR = Path.home()
+
+if platform.system() == "Windows":
+    os.environ["PGSERVICEFILE"] = str(HOME_DIR / ".pg_service.conf")
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        "OPTIONS": {
+            "service": "my_service",
+            "passfile": HOME_DIR / ".my_pgpass",
+        },
+    }
+}
 ```
+in linux/macOS:
+```python
+export PGSERVICEFILE=$HOME/.pg_service.conf
+source ~/.bashrc
+```
+- in windows:
+`C:\Users\<username>\.pg_service.conf`
+- in linux/macOS:
+` ~/.pg_service.conf`
+
+.pg_service.conf:
+```ini
+[my_service]
+host=127.0.0.1
+user=postgres
+dbname=shopdata
+port=5432
+```
+
+- in windows:
+`C:\Users\<username>\.my_pgpass`
+- in linux/macOS:
+` ~/.my_pgpass`
+
+.my_pgpass:
+```text
+127.0.0.1:5432:shopdata:postgres:root
+```
+then:
+```bash
+python manage.py migrate
+```
+#
