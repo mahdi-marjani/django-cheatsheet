@@ -1041,6 +1041,22 @@ class UserAdmin(BaseUserAdmin):
             form.base_fields['is_superuser'].disabled = True           # make read-only for non-superusers
         return form
 ```
+&lt;project-name&gt;/accounts/managers.py:
+```python
+from django.contrib.auth.models import BaseUserManager
+
+class UserManager(BaseUserManager):
+    ...
+
+    def create_superuser(self, phone_number, email, full_name, password):
+        user = self.create_user(phone_number = phone_number, email = email, full_name = full_name, password = password)
+
+        user.is_admin = True
+        user.is_superuser = True        # set by createsuperuser command to grant full access to admin panel
+        user.save(using=self._db)
+
+        return user
+```
 #
 ### postgresql:
 packages:
