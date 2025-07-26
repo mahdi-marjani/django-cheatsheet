@@ -1191,17 +1191,17 @@ from ckeditor.fields import RichTextField
 
 class Product(models.Model):
     ...
-    description = RichTextField()
+    description = RichTextField()                # use RichTextField
     ...
 
 ...
 ```
 &lt;project-name&gt;/home/templates/home/home.html:
 ```html
-<p class="card-text">{{ product.description|safe }}</p>
+<p class="card-text">{{ product.description|safe }}</p>    # use safe django filter
 ```
 &lt;project-name&gt;/home/templates/home/detail.html:
 ```html
-<p>{{ product.description|safe }}</p>
+<p>{{ product.description|safe }}</p>                      # use safe django filter
 ```
 #
