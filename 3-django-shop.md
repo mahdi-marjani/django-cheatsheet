@@ -24,6 +24,7 @@
 - [permissions](#permissions)
 - [postgresql](#postgresql)
 - [caching sessions with redis](#caching-sessions-with-redis)
+- [ckeditor](#ckeditor)
 
 
 
@@ -1151,5 +1152,56 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cache'            # cache onl
 # SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'      # cache in redis and main db for backup
 
 ...
+```
+#
+### ckeditor:
+packages:
+```bash
+pip install django-ckeditor
+```
+settings.py:
+```python
+...
+
+INSTALLED_APPS = [
+    ...
+    
+    # Local apps
+    ...
+    
+    # Third-party apps
+    ...
+    'ckeditor'
+]
+
+...
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+    },
+}
+```
+&lt;project-name&gt;/home/models.py:
+```python
+...
+from ckeditor.fields import RichTextField
+
+...
+
+class Product(models.Model):
+    ...
+    description = RichTextField()
+    ...
+
+...
+```
+&lt;project-name&gt;/home/templates/home/home.html:
+```html
+<p class="card-text">{{ product.description|safe }}</p>
+```
+&lt;project-name&gt;/home/templates/home/detail.html:
+```html
+<p>{{ product.description|safe }}</p>
 ```
 #
