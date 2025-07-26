@@ -23,6 +23,7 @@
 - [validators](#validators)
 - [permissions](#permissions)
 - [postgresql](#postgresql)
+- [caching sessions with redis](#caching-sessions-with-redis)
 
 
 
@@ -1126,5 +1127,29 @@ port=5432
 then:
 ```bash
 python manage.py migrate
+```
+#
+### caching sessions with redis:
+packages:
+```bash
+pip install redis
+pip install hiredis
+```
+settings.py:
+```python
+...
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",    # use redis for cache
+        "LOCATION": "redis://127.0.0.1:6379",                        # redis address
+        # "LOCATION": "redis://username:password@127.0.0.1:6379",    # connect to redis with user and pass
+    }
+}
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'            # cache only in redis
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'      # cache in redis and main db for backup
+
+...
 ```
 #
