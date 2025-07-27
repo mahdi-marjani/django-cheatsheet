@@ -23,7 +23,7 @@ INSTALLED_APPS = [
 ```
 #
 ### create api:
-<project-name>/home/views.py:
+&lt;project-name&gt;/home/views.py:
 ```python
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -33,7 +33,7 @@ class Home(APIView):
     def get(self, request):
         return Response({"message": "Hello, world!"})
 ```
-<project-name>/home/urls.py:
+&lt;project-name&gt;/home/urls.py:
 ```python
 from django.urls import path
 from . import views
