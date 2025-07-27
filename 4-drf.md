@@ -43,7 +43,7 @@ urlpatterns = [
     path('', views.Home.as_view(), name='home')        # endpoint
 ]
 ```
-`GET` http://127.0.0.1:8000/
+**GET** `http://127.0.0.1:8000/`
 
 json response:
 ```json
