@@ -1,6 +1,7 @@
 ## Index
 - [initialize django rest framework](#initialize-django-rest-framework)
 - [create api](#create-api)
+- [request object](#request-object)
 
 
 
@@ -51,4 +52,49 @@ json response:
     "message": "Hello, world!"
 }
 ```
+#
+### request object:
+request.query_params:
+```python
+class Home(APIView):
+    def get(self, request):
+        message = request.query_params['msg']    # get query parameter "msg"
+        return Response({"message": message})
+```
+**GET** `http://127.0.0.1:8000/?msg=hi`
+
+response:
+```json
+{
+    "message": "hi"
+}
+```
+request.data:
+```python
+class Home(APIView):
+    ...
+
+    def post(self, request):
+        message = request.data['msg']            # get "msg" from JSON body
+        return Response({"message": message})
+```
+**POST** `http://127.0.0.1:8000/`
+
+request json body:
+```json
+{
+    "msg":"hello"
+}
+```
+response:
+```json
+{
+    "message": "hello"
+}
+```
+
+<br/>
+
+Also available: `request.user`, `request.method`, `request.session`, etc.
+
 #
