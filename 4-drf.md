@@ -2,6 +2,7 @@
 - [initialize django rest framework](#initialize-django-rest-framework)
 - [create api](#create-api)
 - [request object](#request-object)
+- [serializers](#serializers)
 
 
 
@@ -97,4 +98,55 @@ response:
 
 Also available: `request.user`, `request.method`, `request.session`, etc.
 
+#
+### serializers:
+&lt;project-name&gt;/home/models.py:
+```python
+class Person(models.Model):
+    name = models.CharField(max_length=30)
+    age = models.PositiveSmallIntegerField()
+    email = models.EmailField()
+```
+&lt;project-name&gt;/home/serializers.py:
+```python
+from rest_framework import serializers
+
+class PersonSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=30)
+    age = serializers.IntegerField()
+    email = serializers.EmailField()
+```
+&lt;project-name&gt;/home/views.py:
+```python
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .models import Person
+from .serializers import PersonSerializer
+
+
+class Home(APIView):
+    def get(self, request):
+        persons = Person.objects.all()
+        ser_data = PersonSerializer(instance=persons, many=True)
+        return Response({"data": ser_data.data})
+```
+**GET** `http://127.0.0.1:8000/`
+
+response:
+```json
+{
+    "data": [
+        {
+            "name": "amir",
+            "age": 12,
+            "email": "amir@email.com"
+        },
+        {
+            "name": "kevin",
+            "age": 4,
+            "email": "kevin@email.com"
+        }
+    ]
+}
+```
 #
