@@ -5,7 +5,7 @@
 - [serializers](#serializers)
 - [register](#register)
 - [custom serializer validator](#custom-serializer-validator)
-- [custom serializer validator](#custom-serializer-validator)
+- [ModelSerializer (like ModelForm)](#ModelSerializer-like-ModelForm)
 
 
 
