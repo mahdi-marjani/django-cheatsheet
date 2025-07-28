@@ -3,6 +3,7 @@
 - [create api](#create-api)
 - [request object](#request-object)
 - [serializers](#serializers)
+- [register](#register)
 
 
 
@@ -127,7 +128,7 @@ from .serializers import PersonSerializer
 class Home(APIView):
     def get(self, request):
         persons = Person.objects.all()
-        ser_data = PersonSerializer(instance=persons, many=True)    # use instance for convert model to json
+        ser_data = PersonSerializer(instance=persons, many=True)    # use 'instance' to convert model/queryset to JSON
         return Response({"data": ser_data.data})
 ```
 **GET** `http://127.0.0.1:8000/`
@@ -147,6 +148,63 @@ response:
             "email": "kevin@email.com"
         }
     ]
+}
+```
+#
+### register:
+&lt;project-name&gt;/accounts/serializers.py:
+```python
+from rest_framework import serializers
+
+class UserRegisterSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True, write_only=True)
+```
+&lt;project-name&gt;/accounts/views.py:
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+from .serializers import UserRegisterSerializer
+
+class UserRegister(APIView):
+    def post(self, request):
+        ser_data = UserRegisterSerializer(data=request.data)        # use 'data' to convert JSON input to model
+        if ser_data.is_valid():
+            User.objects.create_user(
+                username=ser_data.validated_data['username'],
+                email=ser_data.validated_data['email'],
+                password=ser_data.validated_data['password']
+            )
+            return Response(ser_data.data)
+        return Response(ser_data.errors)
+```
+&lt;project-name&gt;/accounts/urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'accounts'
+urlpatterns = [
+    path('register/', views.UserRegister.as_view()),
+]
+```
+**POST** `http://127.0.0.1:8000/accounts/register/`
+
+body:
+```json
+{
+    "username":"pavel",
+    "email":"pavel@email.com",
+    "password":"pavel"
+}
+```
+response:
+```json
+{
+    "username": "pavel",
+    "email": "pavel@email.com"
 }
 ```
 #
