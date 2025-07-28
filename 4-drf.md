@@ -127,7 +127,7 @@ from .serializers import PersonSerializer
 class Home(APIView):
     def get(self, request):
         persons = Person.objects.all()
-        ser_data = PersonSerializer(instance=persons, many=True)
+        ser_data = PersonSerializer(instance=persons, many=True)    # use instance for convert model to json
         return Response({"data": ser_data.data})
 ```
 **GET** `http://127.0.0.1:8000/`
