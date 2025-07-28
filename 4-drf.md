@@ -205,6 +205,7 @@ response:
 {
     "username": "pavel",
     "email": "pavel@email.com"
+    // "password" is hidden because it's write_only in the serializer
 }
 ```
 #
