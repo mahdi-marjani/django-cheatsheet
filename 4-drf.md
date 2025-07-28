@@ -201,7 +201,7 @@ body:
 }
 ```
 response:
-```json
+```javascript
 {
     "username": "pavel",
     "email": "pavel@email.com"
