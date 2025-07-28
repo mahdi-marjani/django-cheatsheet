@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     
     # Local apps
     'home.apps.HomeConfig',
+    'accounts.apps.AccountsConfig',
 
     # Third-party apps
     'rest_framework',
