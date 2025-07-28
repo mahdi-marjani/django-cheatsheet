@@ -5,6 +5,7 @@
 - [serializers](#serializers)
 - [register](#register)
 - [custom serializer validator](#custom-serializer-validator)
+- [custom serializer validator](#custom-serializer-validator)
 
 
 
@@ -231,6 +232,42 @@ class UserRegisterSerializer(serializers.Serializer):
         return value
     
     def validate(self, data):                                              # object-level validation: compare multiple fields
+        if data['password'] != data['password2']:
+            raise serializers.ValidationError("password must match")
+        return data
+```
+#
+### ModelSerializer (like ModelForm):
+&lt;project-name&gt;/accounts/serializers.py:
+```python
+from rest_framework import serializers
+from django.contrib.auth.models import User
+
+def clean_email(value):
+    if 'admin' in value:
+        raise serializers.ValidationError("admin can't be in email")
+
+class UserRegisterSerializer(serializers.ModelSerializer):
+    password2 = serializers.CharField(write_only=True, required=True)        # extra field (not in model)
+
+    class Meta:
+        model = User
+
+        # exclude specific fields (can't use both 'fields' and 'excludes')
+        # excludes = ('username')
+
+        fields = ('username', 'email', 'password', 'password2')              # specify included fields
+        extra_kwargs = {
+            'password': {'write_only': True},                                # hide password in output
+            'email': {'validators': [clean_email]},                          # use custom field-level validator
+        }
+
+    def validate_username(self, value):
+        if value == 'admin':
+            raise serializers.ValidationError("username can't be `admin`")
+        return value
+    
+    def validate(self, data):
         if data['password'] != data['password2']:
             raise serializers.ValidationError("password must match")
         return data
