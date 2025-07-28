@@ -4,6 +4,7 @@
 - [request object](#request-object)
 - [serializers](#serializers)
 - [register](#register)
+- [custom serializer validator](#custom-serializer-validator)
 
 
 
@@ -207,5 +208,31 @@ response:
     "email": "pavel@email.com"
     // "password" is hidden because it's write_only in the serializer
 }
+```
+#
+### custom serializer validator:
+&lt;project-name&gt;/accounts/serializers.py:
+```python
+from rest_framework import serializers
+
+def clean_email(value):                                                        # custom function-level validator
+    if 'admin' in value:
+        raise serializers.ValidationError("admin can't be in email")
+
+class UserRegisterSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    email = serializers.EmailField(required=True, validators=[clean_email])    # use custom validator to this field
+    password = serializers.CharField(required=True, write_only=True)
+    password2 = serializers.CharField(required=True, write_only=True)
+
+    def validate_username(self, value):                                        # field-level validation: runs for username field
+        if value == 'admin':
+            raise serializers.ValidationError("username can't be `admin`")
+        return value
+    
+    def validate(self, data):                                                  # object-level validation: compare multiple fields
+        if data['password'] != data['password2']:
+            raise serializers.ValidationError("password must match")
+        return data
 ```
 #
