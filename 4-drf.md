@@ -6,6 +6,7 @@
 - [register](#register)
 - [custom serializer validator](#custom-serializer-validator)
 - [ModelSerializer (like ModelForm)](#ModelSerializer-like-ModelForm)
+- [model serializer create method](#model-serializer-create-method)
 
 
 
@@ -271,5 +272,46 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         if data['password'] != data['password2']:
             raise serializers.ValidationError("password must match")
         return data
+```
+#
+### model serializer create method:
+&lt;project-name&gt;/accounts/serializers.py:
+```python
+from rest_framework import serializers
+from django.contrib.auth.models import User
+
+...
+
+class UserRegisterSerializer(serializers.ModelSerializer):
+    ...
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password', 'password2')
+        ...
+    
+    def create(self, validated_data):                                # override to customize model instance creation
+        return User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password']
+        )
+
+    ...
+```
+&lt;project-name&gt;/accounts/views.py:
+```python
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+from .serializers import UserRegisterSerializer
+
+class UserRegister(APIView):
+    def post(self, request):
+        ser_data = UserRegisterSerializer(data=request.data)
+        if ser_data.is_valid():
+            ser_data.create(ser_data.validated_data)                 # use custom create method
+            return Response(ser_data.data)
+        return Response(ser_data.errors)
 ```
 #
