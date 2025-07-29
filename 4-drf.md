@@ -478,12 +478,12 @@ class AnswerSerializer(serializers.ModelSerializer):
 ```
 &lt;project-name&gt;/home/views.py:
 ```python
+...
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Question, Answer
 from .serializers import QuestionSerializer, AnswerSerializer
 from rest_framework import status
-...
 
 ...
 
@@ -531,3 +531,4 @@ response:
 ```
 #
 ### create (POST):
+&lt;project-name&gt;/home/views.py:
