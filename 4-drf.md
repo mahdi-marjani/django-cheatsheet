@@ -558,7 +558,7 @@ class QuestionView(APIView):
         srz_data = QuestionSerializer(
             instance=question,
             data=request.data,
-            partial=True
+            partial=True                                                        # only send fields you want to update
         )
         if srz_data.is_valid():
             srz_data.save()
