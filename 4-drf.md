@@ -639,13 +639,13 @@ from rest_framework import status
 
 ...
 
-class QuestionListView(APIView):
+class QuestionListView(APIView):                                                # GET: return list of all questions
     def get(self, request):
         questions = Question.objects.all()
         srz_data = QuestionSerializer(instance=questions, many=True)
         return Response(srz_data.data, status=status.HTTP_200_OK)
 
-class QuestionCreateView(APIView):
+class QuestionCreateView(APIView):                                              # POST: create new question
     def post(self, request):
         srz_data = QuestionSerializer(data=request.data)
         if srz_data.is_valid():
@@ -653,7 +653,7 @@ class QuestionCreateView(APIView):
             return Response(srz_data.data, status=status.HTTP_201_CREATED)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class QuestionUpdateView(APIView):
+class QuestionUpdateView(APIView):                                              # PUT: update existing question
     def put(self, request, pk):
         question = Question.objects.get(pk=pk)
         srz_data = QuestionSerializer(
@@ -666,7 +666,7 @@ class QuestionUpdateView(APIView):
             return Response(srz_data.data, status=status.HTTP_200_OK)
         return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class QuestionDeleteView(APIView):
+class QuestionDeleteView(APIView):                                              # DELETE: remove question
     def delete(self, request, pk):
         question = Question.objects.get(pk=pk)
         question.delete()
@@ -685,13 +685,13 @@ from .models import Question, Answer
 ...
 
 class QuestionSerializer(serializers.ModelSerializer):
-    answers = serializers.SerializerMethodField()
+    answers = serializers.SerializerMethodField()                    # custom field: show related answers
 
     class Meta:
         model = Question
         fields = '__all__'
     
-    def get_answers(self, obj):
+    def get_answers(self, obj):                                      # return answers related to this question
         result = obj.answers.all()
         return AnswerSerializer(instance=result, many=True).data
 
