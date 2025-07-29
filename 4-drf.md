@@ -9,6 +9,7 @@
 - [model serializer create method](#model-serializer-create-method)
 - [status codes](#status-codes)
 - [authentication](#authentication)
+- [permissions](#permissions)
 
 
 
@@ -381,6 +382,51 @@ response:
 ```json
 {
     "token": "ff7bfb5b86bd1306dc37fabd745bfc015b63f5db"
+}
+```
+#
+### permissions:
+&lt;project-name&gt;/home/views.py:
+```python
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .models import Person
+from .serializers import PersonSerializer
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
+
+class Home(APIView):
+    permission_classes = [IsAuthenticated,]                            # only authenticated users can access this view
+
+    def get(self, request):
+        persons = Person.objects.all()
+        ser_data = PersonSerializer(instance=persons, many=True)
+        return Response({"data": ser_data.data})
+
+```
+**GET** `http://127.0.0.1:8000/`
+
+headers:
+```json
+{
+  "Authorization": "Token ff7bfb5b86bd1306dc37fabd745bfc015b63f5db"
+}
+```
+response:
+```json
+{
+    "data": [
+        {
+            "name": "amir",
+            "age": 12,
+            "email": "amir@email.com"
+        },
+        {
+            "name": "kevin",
+            "age": 4,
+            "email": "kevin@email.com"
+        }
+    ]
 }
 ```
 #
