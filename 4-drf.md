@@ -11,6 +11,7 @@
 - [authentication](#authentication)
 - [permissions](#permissions)
 - [read (GET)](#read-GET)
+- [create (POST)](#create-POST)
 
 
 
@@ -487,18 +488,18 @@ from rest_framework import status
 ...
 
 class QuestionView(APIView):
-    def get(self, request):                                                    # GET: return list of all questions
+    def get(self, request):                                             # GET: return list of all questions
         questions = Question.objects.all()
-        srz_data = QuestionSerializer(instance=questions, many=True).data
-        return Response(srz_data, status=status.HTTP_200_OK)
+        srz_data = QuestionSerializer(instance=questions, many=True)
+        return Response(srz_data.data, status=status.HTTP_200_OK)
 
-    def post(self, request):                                                   # POST: create new question
+    def post(self, request):                                            # POST: create new question
         pass
 
-    def put(self, request):                                                    # PUT: update existing question
+    def put(self, request, pk):                                         # PUT: update existing question
         pass
 
-    def delete(self, request):                                                 # DELETE: remove question
+    def delete(self, request, pk):                                      # DELETE: remove question
         pass
 ```
 &lt;project-name&gt;/home/urls.py:
@@ -529,3 +530,4 @@ response:
 ]
 ```
 #
+### create (POST):
