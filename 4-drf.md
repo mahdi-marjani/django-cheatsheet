@@ -8,6 +8,7 @@
 - [ModelSerializer (like ModelForm)](#ModelSerializer-like-ModelForm)
 - [model serializer create method](#model-serializer-create-method)
 - [status codes](#status-codes)
+- [authentication](#authentication)
 
 
 
@@ -330,5 +331,56 @@ class UserRegister(APIView):
             ser_data.create(ser_data.validated_data)
             return Response(ser_data.data, status=status.HTTP_201_CREATED)        # 201: created successfully
         return Response(ser_data.errors, status=status.HTTP_400_BAD_REQUEST)      # 400: bad input
+```
+#
+### authentication:
+settings.py:
+```python
+...
+
+INSTALLED_APPS = [
+    ...
+    
+    # Local apps
+    ...
+
+    # Third-party apps
+    ...
+    'rest_framework.authtoken',                                    # enable token-based authentication
+]
+
+...
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',       # use TokenAuthentication
+    ]
+}
+```
+&lt;project-name&gt;/accounts/urls.py:
+```python
+...
+from rest_framework.authtoken import views as authtoken_views
+
+app_name = 'accounts'
+urlpatterns = [
+    ...
+    path('api-token-auth/', authtoken_views.obtain_auth_token),    # return auth token for valid user
+]
+```
+**POST** `http://127.0.0.1:8000/accounts/api-token-auth/`
+
+body:
+```json
+{
+    "username":"root",
+    "password":"root"
+}
+```
+response:
+```json
+{
+    "token": "ff7bfb5b86bd1306dc37fabd745bfc015b63f5db"
+}
 ```
 #
