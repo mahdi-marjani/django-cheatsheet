@@ -12,6 +12,8 @@
 - [permissions](#permissions)
 - [read (GET)](#read-GET)
 - [create (POST) update (PUT) delete (DELETE)](#create-POST-update-PUT-delete-DELETE)
+- [clean question view](#clean-question-view)
+- [method fields](#method-fields)
 
 
 
@@ -623,5 +625,125 @@ response:
 {
     "message": "question deleted"
 }
+```
+#
+### clean question view:
+&lt;project-name&gt;/home/views.py:
+```python
+...
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .models import Question, Answer
+from .serializers import QuestionSerializer, AnswerSerializer
+from rest_framework import status
+
+...
+
+class QuestionListView(APIView):
+    def get(self, request):
+        questions = Question.objects.all()
+        srz_data = QuestionSerializer(instance=questions, many=True)
+        return Response(srz_data.data, status=status.HTTP_200_OK)
+
+class QuestionCreateView(APIView):
+    def post(self, request):
+        srz_data = QuestionSerializer(data=request.data)
+        if srz_data.is_valid():
+            srz_data.save()
+            return Response(srz_data.data, status=status.HTTP_201_CREATED)
+        return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class QuestionUpdateView(APIView):
+    def put(self, request, pk):
+        question = Question.objects.get(pk=pk)
+        srz_data = QuestionSerializer(
+            instance=question,
+            data=request.data,
+            partial=True
+        )
+        if srz_data.is_valid():
+            srz_data.save()
+            return Response(srz_data.data, status=status.HTTP_200_OK)
+        return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class QuestionDeleteView(APIView):
+    def delete(self, request, pk):
+        question = Question.objects.get(pk=pk)
+        question.delete()
+        return Response(
+            {'message': 'question deleted'},
+            status=status.HTTP_200_OK
+        )
+```
+#
+### method fields:
+&lt;project-name&gt;/home/serializers.py:
+```python
+from rest_framework import serializers
+from .models import Question, Answer
+
+...
+
+class QuestionSerializer(serializers.ModelSerializer):
+    answers = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Question
+        fields = '__all__'
+    
+    def get_answers(self, obj):
+        result = obj.answers.all()
+        return AnswerSerializer(instance=result, many=True).data
+
+...
+```
+**GET** `http://127.0.0.1:8000/questions/`
+
+
+response:
+```json
+[
+    {
+        "id": 1,
+        "answers": [
+            {
+                "id": 1,
+                "body": "this is first answer",
+                "created": "2025-07-29T11:37:27.472129Z",
+                "user": 1,
+                "question": 1
+            },
+            {
+                "id": 2,
+                "body": "answer for first",
+                "created": "2025-07-29T17:47:54.811042Z",
+                "user": 15,
+                "question": 1
+            }
+        ],
+        "title": "first question",
+        "slug": "first-question",
+        "body": "this is first question",
+        "created": "2025-07-29T11:37:03.756944Z",
+        "user": 15
+    },
+    {
+        "id": 2,
+        "answers": [
+            {
+                "id": 3,
+                "body": "answer for second",
+                "created": "2025-07-29T17:48:10.828477Z",
+                "user": 15,
+                "question": 5
+            }
+        ],
+        "title": "second question",
+        "slug": "second-question",
+        "body": "this is second question",
+        "created": "2025-07-29T17:47:06.196358Z",
+        "user": 15
+    }
+]
 ```
 #
