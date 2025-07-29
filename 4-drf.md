@@ -11,7 +11,7 @@
 - [authentication](#authentication)
 - [permissions](#permissions)
 - [read (GET)](#read-GET)
-- [create (POST)](#create-POST)
+- [create (POST) update (PUT) delete (DELETE)](#create-POST-update-PUT-delete-DELETE)
 
 
 
@@ -510,7 +510,8 @@ from . import views
 app_name = 'home'
 urlpatterns = [
     ...
-    path('questions/', views.QuestionView.as_view())
+    path('questions/', views.QuestionView.as_view()),           # for GET and POST
+    path('questions/<int:pk>', views.QuestionView.as_view())    # for PUT and DELETE
 ]
 ```
 **GET** `http://127.0.0.1:8000/questions/`
@@ -530,5 +531,97 @@ response:
 ]
 ```
 #
-### create (POST):
+### create (POST) update (PUT) delete (DELETE):
 &lt;project-name&gt;/home/views.py:
+```python
+...
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .models import Question, Answer
+from .serializers import QuestionSerializer, AnswerSerializer
+from rest_framework import status
+
+...
+
+class QuestionView(APIView):
+    ...
+
+    def post(self, request):                                                    # POST: create new question
+        srz_data = QuestionSerializer(data=request.data)
+        if srz_data.is_valid():
+            srz_data.save()
+            return Response(srz_data.data, status=status.HTTP_201_CREATED)
+        return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk):                                                 # PUT: update existing question
+        question = Question.objects.get(pk=pk)
+        srz_data = QuestionSerializer(
+            instance=question,
+            data=request.data,
+            partial=True
+        )
+        if srz_data.is_valid():
+            srz_data.save()
+            return Response(srz_data.data, status=status.HTTP_200_OK)
+        return Response(srz_data.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):                                              # DELETE: remove question
+        question = Question.objects.get(pk=pk)
+        question.delete()
+        return Response(
+            {'message': 'question deleted'},
+            status=status.HTTP_200_OK
+        )
+```
+**POST** `http://127.0.0.1:8000/questions/`
+
+body:
+```json
+{
+    "title": "second",
+    "slug": "second-question",
+    "body": "this is second question",
+    "user": 15
+}
+```
+response:
+```json
+{
+    "id": 2,
+    "title": "second",
+    "slug": "second-question",
+    "body": "this is second question",
+    "created": "2025-07-29T13:49:42.947137Z",
+    "user": 15
+}
+```
+
+**PUT** `http://127.0.0.1:8000/questions/2`
+
+body:
+```json
+{
+    "title": "Second Question"
+}
+```
+response:
+```json
+{
+    "id": 2,
+    "title": "Second Question",
+    "slug": "second-question",
+    "body": "this is second question",
+    "created": "2025-07-29T14:19:37.749296Z",
+    "user": 15
+}
+```
+
+**DELETE** `http://127.0.0.1:8000/questions/2`
+
+response:
+```json
+{
+    "message": "question deleted"
+}
+```
+#
