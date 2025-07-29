@@ -10,6 +10,7 @@
 - [status codes](#status-codes)
 - [authentication](#authentication)
 - [permissions](#permissions)
+- [read (GET)](#read-GET)
 
 
 
@@ -428,5 +429,103 @@ response:
         }
     ]
 }
+```
+#
+### read (GET):
+&lt;project-name&gt;/home/models.py:
+```python
+from django.db import models
+from django.contrib.auth.models import User
+
+...
+
+class Question(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='questions')
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200)
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user} - {self.title[:20]}'
+
+class Answer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='answers')
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.user} - {self.question.title[:20]}'
+```
+&lt;project-name&gt;/home/serializers.py:
+```python
+from rest_framework import serializers
+from .models import Question, Answer
+
+...
+
+class QuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Question
+        fields = '__all__'
+
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = '__all__'
+```
+&lt;project-name&gt;/home/views.py:
+```python
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .models import Question, Answer
+from .serializers import QuestionSerializer, AnswerSerializer
+from rest_framework import status
+...
+
+...
+
+class QuestionView(APIView):
+    def get(self, request):                                                    # GET: return list of all questions
+        questions = Question.objects.all()
+        srz_data = QuestionSerializer(instance=questions, many=True).data
+        return Response(srz_data, status=status.HTTP_200_OK)
+
+    def post(self, request):                                                   # POST: create new question
+        pass
+
+    def put(self, request):                                                    # PUT: update existing question
+        pass
+
+    def delete(self, request):                                                 # DELETE: remove question
+        pass
+```
+&lt;project-name&gt;/home/urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    ...
+    path('questions/', views.QuestionView.as_view())
+]
+```
+**GET** `http://127.0.0.1:8000/questions/`
+
+
+response:
+```javascript
+[
+    {
+        "id": 1,
+        "title": "first question",
+        "slug": "first-question",
+        "body": "this is first question",
+        "created": "2025-07-29T11:37:03.756944Z",
+        "user": 15                                    // related user `id`
+    }
+]
 ```
 #
