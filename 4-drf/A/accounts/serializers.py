@@ -10,12 +10,18 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        # excludes = ('username')
         fields = ('username', 'email', 'password', 'password2')
         extra_kwargs = {
             'password': {'write_only': True},
             'email': {'validators': [clean_email]},
         }
+    
+    def create(self, validated_data):
+        return User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password']
+        )
 
     def validate_username(self, value):
         if value == 'admin':
