@@ -20,6 +20,7 @@
 - [throttling](#throttling)
 - [jwt](#jwt)
 - [swagger](#swagger)
+- [JSONRenderer](#JSONRenderer)
 
 
 
@@ -1402,3 +1403,17 @@ class QuestionCreateView(APIView):
 ...
 ```
 #
+### JSONRenderer:
+settings.py:
+```python
+...
+
+REST_FRAMEWORK = {
+    ...
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ]
+}
+
+...
+```
