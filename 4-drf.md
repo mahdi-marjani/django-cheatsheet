@@ -483,8 +483,8 @@ class AnswerSerializer(serializers.ModelSerializer):
 ...
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Question, Answer
-from .serializers import QuestionSerializer, AnswerSerializer
+from .models import Question
+from .serializers import QuestionSerializer
 from rest_framework import status
 
 ...
@@ -539,8 +539,8 @@ response:
 ...
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Question, Answer
-from .serializers import QuestionSerializer, AnswerSerializer
+from .models import Question
+from .serializers import QuestionSerializer
 from rest_framework import status
 
 ...
