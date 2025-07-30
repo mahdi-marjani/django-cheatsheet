@@ -16,6 +16,7 @@
 - [method fields](#method-fields)
 - [custom permissions](#custom-permissions)
 - [serializer relations](#serializer-relations)
+- [viewset](#viewset)
 
 
 
@@ -954,5 +955,145 @@ response:
         "user": "mahdi - mahdi@email.com"
     }
 ]
+```
+#
+### viewset:
+&lt;project-name&gt;/accounts/serializers.py:
+```python
+from rest_framework import serializers
+from django.contrib.auth.models import User
+
+...
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'
+```
+&lt;project-name&gt;/accounts/views.py:
+```python
+...
+from rest_framework.response import Response
+from .serializers import UserSerializer
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import User
+from django.shortcuts import get_object_or_404
+
+...
+
+class UserViewSet(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+    queryset = User.objects.all()
+
+    def list(self, request):
+        srz_data = UserSerializer(instance=self.queryset, many=True)
+        return Response(srz_data.data)
+
+    def retrieve(self, request, pk=None):
+        user = get_object_or_404(self.queryset, pk=pk)
+        srz_data = UserSerializer(instance=user)
+        return Response(srz_data.data)
+
+    def partial_update(self, request, pk=None):
+        user = get_object_or_404(self.queryset, pk=pk)
+
+        if user != request.user:
+            return Response({'permission denied': 'you are not the owner'})
+
+        srz_data = UserSerializer(instance=user, data=request.data, partial=True)
+        if srz_data.is_valid():
+            srz_data.save()
+            return Response(srz_data.data)
+        return Response(srz_data.errors)
+        
+
+    def destroy(self, request, pk=None):
+        user = get_object_or_404(self.queryset, pk=pk)
+
+        if user != request.user:
+            return Response({'permission denied': 'you are not the owner'})
+
+        user.is_active = False
+        user.save()
+        return Response({'message': 'user deactivated'})
+```
+&lt;project-name&gt;/accounts/urls.py:
+```python
+...
+from . import views
+from rest_framework import routers
+
+app_name = 'accounts'
+urlpatterns = [
+    ...
+]
+
+router = routers.SimpleRouter()
+router.register(r'user', views.UserViewSet)
+urlpatterns += router.urls
+```
+
+**GET** `http://127.0.0.1:8000/accounts/user/`
+
+
+response:
+```python
+[
+    {
+        "id": 1,
+        "password": "***",
+        "username": "root",
+        ...
+    },
+    {
+        "id": 15,
+        "password": "***",
+        "username": "mahdi",
+        ...
+    }
+]
+```
+
+**GET** `http://127.0.0.1:8000/accounts/user/1/`
+
+
+response:
+```python
+{
+    "id": 1,
+    "password": "***",
+    "username": "root",
+    ...
+}
+```
+
+**PATCH** `http://127.0.0.1:8000/accounts/user/15/`
+
+
+body:
+```python
+{
+    "username": "mahdi-dev"
+}
+```
+response:
+```python
+{
+    "id": 15,
+    "password": "***",
+    "username": "mahdi-dev",
+    ...
+}
+```
+
+**DELETE** `http://127.0.0.1:8000/accounts/user/15/`
+
+
+response:
+```python
+{
+    "message": "user deactivated"
+}
 ```
 #
