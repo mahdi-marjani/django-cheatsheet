@@ -918,7 +918,7 @@ response:
 from rest_framework import serializers
 
 class UserEmailNameRelationalField(serializers.RelatedField):
-    def to_representation(self, value):                            # custom output for related user
+    def to_representation(self, value):                            # custom output for related user (rarely used)
         return f'{value.username} - {value.email}'
 ```
 &lt;project-name&gt;/home/serializers.py:
@@ -932,7 +932,7 @@ from .custom_relational_fields import UserEmailNameRelationalField
 class QuestionSerializer(serializers.ModelSerializer):
     ...
 
-    user = UserEmailNameRelationalField(read_only=True)            # custom user display (rarely used)
+    user = UserEmailNameRelationalField(read_only=True)                # custom user display (rarely used)
 
     ...
 
