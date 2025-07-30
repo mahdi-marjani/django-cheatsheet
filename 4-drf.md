@@ -513,7 +513,7 @@ app_name = 'home'
 urlpatterns = [
     ...
     path('questions/', views.QuestionView.as_view()),           # for GET and POST
-    path('questions/<int:pk>', views.QuestionView.as_view())    # for PUT and DELETE
+    path('questions/<int:pk>/', views.QuestionView.as_view())    # for PUT and DELETE
 ]
 ```
 **GET** `http://127.0.0.1:8000/questions/`
@@ -598,7 +598,7 @@ response:
 }
 ```
 
-**PUT** `http://127.0.0.1:8000/questions/2`
+**PUT** `http://127.0.0.1:8000/questions/2/`
 
 body:
 ```json
@@ -618,7 +618,7 @@ response:
 }
 ```
 
-**DELETE** `http://127.0.0.1:8000/questions/2`
+**DELETE** `http://127.0.0.1:8000/questions/2/`
 
 response:
 ```json
