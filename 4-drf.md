@@ -14,6 +14,7 @@
 - [create (POST) update (PUT) delete (DELETE)](#create-POST-update-PUT-delete-DELETE)
 - [clean question view](#clean-question-view)
 - [method fields](#method-fields)
+- [custom permissions](#custom-permissions)
 
 
 
@@ -759,5 +760,55 @@ response:
         "user": 15
     }
 ]
+```
+#
+### custom permissions:
+&lt;project-name&gt;/permissions.py:
+```python
+from rest_framework.permissions import BasePermission, SAFE_METHODS
+
+class IsOwnerOrReadOnly(BasePermission):
+    message = 'permission denied, you are not the owner'
+
+    def has_permission(self, request, view):                            # check before any object is accessed
+        return request.user.is_authenticated and request.user           # user must be authenticated
+
+    def has_object_permission(self, request, view, obj):                # check for each object separately
+        if request.method in SAFE_METHODS:                              # read-only access to everyone (GET, HEAD, OPTIONS)
+            return True
+        return obj.user == request.user                                 # only owner can edit/delete
+```
+&lt;project-name&gt;/home/views.py:
+```python
+...
+from rest_framework.permissions import IsAuthenticated
+from permissions import IsOwnerOrReadOnly
+
+...
+
+class QuestionCreateView(APIView):
+    permission_classes = [IsAuthenticated,]                 # only authenticated users can create
+
+    ...
+
+class QuestionUpdateView(APIView):
+    permission_classes = [IsOwnerOrReadOnly,]               # only owner can update
+
+    def put(self, request, pk):
+        question = Question.objects.get(pk=pk)
+
+        self.check_object_permissions(request, question)    # check object-level permission
+
+        ...
+
+class QuestionDeleteView(APIView):
+    permission_classes = [IsOwnerOrReadOnly,]               # only owner can delete
+
+    def delete(self, request, pk):
+        question = Question.objects.get(pk=pk)
+        
+        self.check_object_permissions(request, question)    # check object-level permission
+
+        ...
 ```
 #
