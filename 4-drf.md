@@ -675,6 +675,20 @@ class QuestionDeleteView(APIView):                                              
             status=status.HTTP_200_OK
         )
 ```
+&lt;project-name&gt;/home/urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    ...
+    path('questions/', views.QuestionListView.as_view()),                     # GET
+    path('question/create/', views.QuestionCreateView.as_view()),             # POST
+    path('question/update/<int:pk>/', views.QuestionUpdateView.as_view()),    # PUT
+    path('question/delete/<int:pk>/', views.QuestionDeleteView.as_view())     # DELETE
+]
+```
 #
 ### method fields:
 &lt;project-name&gt;/home/serializers.py:
