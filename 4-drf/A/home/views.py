@@ -23,6 +23,11 @@ class QuestionListView(APIView):
         return Response(srz_data.data, status=status.HTTP_200_OK)
 
 class QuestionCreateView(APIView):
+    """
+        create new question
+    """
+
+    serializer_class = QuestionSerializer()
     permission_classes = [IsAuthenticated,]
 
     def post(self, request):
