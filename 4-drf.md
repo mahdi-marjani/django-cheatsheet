@@ -19,6 +19,7 @@
 - [viewset](#viewset)
 - [throttling](#throttling)
 - [jwt](#jwt)
+- [swagger](#swagger)
 
 
 
@@ -1323,5 +1324,81 @@ response:
 {
     "access": "..."    # new access token
 }
+```
+#
+### swagger:
+packages:
+```bash
+pip install PyYAML uritemplate inflection drf-spectacular
+```
+settings.py:
+```python
+...
+
+INSTALLED_APPS = [
+    ...
+    
+    # Local apps
+    ...
+
+    # Third-party apps
+    ...
+    'drf_spectacular',
+]
+
+...
+
+REST_FRAMEWORK = {
+    ...
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'drf Project',
+    'DESCRIPTION': 'Your project description',
+    'VERSION': '1.0.0',
+}
+```
+&lt;project-name&gt;/&lt;project-name&gt;/urls.py:
+```python
+...
+from django.urls import path
+from drf_spectacular.views import (
+    SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+)
+
+urlpatterns = [
+    ...
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),
+    path(
+        'schema/swagger-ui/',
+        SpectacularSwaggerView.as_view(url_name='schema'),
+        name='swagger-ui'
+    ),
+    path('schema/redoc/',
+        SpectacularRedocView.as_view(url_name='schema'),
+        name='redoc'
+    ),
+]
+
+```
+&lt;project-name&gt;/home/views.py:
+```python
+...
+from rest_framework.views import APIView
+from .serializers import QuestionSerializer
+
+...
+
+class QuestionCreateView(APIView):
+    """
+        create new question
+    """
+
+    serializer_class = QuestionSerializer()
+
+    ...
+
+...
 ```
 #
