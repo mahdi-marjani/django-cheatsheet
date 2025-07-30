@@ -1037,6 +1037,12 @@ urlpatterns += router.urls
 **GET** `http://127.0.0.1:8000/accounts/user/`
 
 
+headers:
+```json
+{
+  "Authorization": "Token ff7bfb5b86bd1306dc37fabd745bfc015b63f5db"
+}
+```
 response:
 ```python
 [
@@ -1058,6 +1064,12 @@ response:
 **GET** `http://127.0.0.1:8000/accounts/user/1/`
 
 
+headers:
+```json
+{
+  "Authorization": "Token ff7bfb5b86bd1306dc37fabd745bfc015b63f5db"
+}
+```
 response:
 ```python
 {
@@ -1071,6 +1083,12 @@ response:
 **PATCH** `http://127.0.0.1:8000/accounts/user/15/`
 
 
+headers:
+```json
+{
+  "Authorization": "Token ff7bfb5b86bd1306dc37fabd745bfc015b63f5db"
+}
+```
 body:
 ```python
 {
@@ -1090,6 +1108,12 @@ response:
 **DELETE** `http://127.0.0.1:8000/accounts/user/15/`
 
 
+headers:
+```json
+{
+  "Authorization": "Token ff7bfb5b86bd1306dc37fabd745bfc015b63f5db"
+}
+```
 response:
 ```python
 {
