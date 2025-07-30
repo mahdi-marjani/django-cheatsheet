@@ -18,6 +18,7 @@
 - [serializer relations](#serializer-relations)
 - [viewset](#viewset)
 - [throttling](#throttling)
+- [jwt](#jwt)
 
 
 
@@ -1060,13 +1061,13 @@ response:
 [
     {
         "id": 1,
-        "password": "***",
+        "password": "...",
         "username": "root",
         ...
     },
     {
         "id": 15,
-        "password": "***",
+        "password": "...",
         "username": "mahdi",
         ...
     }
@@ -1086,7 +1087,7 @@ response:
 ```python
 {
     "id": 1,
-    "password": "***",
+    "password": "...",
     "username": "root",
     ...
 }
@@ -1111,7 +1112,7 @@ response:
 ```python
 {
     "id": 15,
-    "password": "***",
+    "password": "...",
     "username": "mahdi-dev",
     ...
 }
@@ -1206,5 +1207,103 @@ class QuestionListView(APIView):
     ...
 
 ...
+```
+#
+### jwt:
+packages:
+```bash
+pip install djangorestframework-simplejwt
+```
+settings.py:
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',    # use JWT for authentication
+    ],
+    ...
+}
+```
+&lt;project-name&gt;/accounts/urls.py:
+```python
+...
+from django.urls import path
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,                        # returns access + refresh tokens
+    TokenRefreshView,                           # returns new access token using refresh
+)
+
+app_name = 'accounts'
+urlpatterns = [
+    ...
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),     # login endpoint
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),    # refresh endpoint
+]
+
+...
+```
+&lt;project-name&gt;/home/views.py:
+```python
+...
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+
+class Home(APIView):
+    permission_classes = [IsAuthenticated,]                # only allow access with valid JWT token
+
+    ...
+
+...
+```
+
+**POST** `http://127.0.0.1:8000/accounts/token/`
+
+
+body:
+```json
+{
+    "username": "root",
+    "password": "root"
+}
+```
+response:
+```python
+{
+    "refresh": "....",      # long-lived token (use to get new access token)
+    "access": "...."        # short-lived token (use for authenticated requests)
+}
+```
+
+**GET** `http://127.0.0.1:8000/`
+
+
+headers:
+```python
+{
+    "Authorization": "Bearer <access_token>"    # send access token in Authorization header
+}
+```
+response:
+```python
+{
+    "data": [
+        ...
+    ]
+}
+```
+
+**POST** `http://127.0.0.1:8000/accounts/token/refresh/`
+
+
+body:
+```python
+{
+    "refresh": "..."    # valid refresh token
+}
+```
+response:
+```python
+{
+    "access": "..."    # new access token
+}
 ```
 #
