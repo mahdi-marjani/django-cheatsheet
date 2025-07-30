@@ -15,6 +15,7 @@
 - [clean question view](#clean-question-view)
 - [method fields](#method-fields)
 - [custom permissions](#custom-permissions)
+- [serializer relations](#serializer-relations)
 
 
 
@@ -212,11 +213,11 @@ body:
 }
 ```
 response:
-```javascript
+```python
 {
     "username": "pavel",
     "email": "pavel@email.com"
-    // "password" is hidden because it's write_only in the serializer
+    # "password" is hidden because it's write_only in the serializer
 }
 ```
 #
@@ -521,7 +522,7 @@ urlpatterns = [
 
 
 response:
-```javascript
+```python
 [
     {
         "id": 1,
@@ -529,7 +530,7 @@ response:
         "slug": "first-question",
         "body": "this is first question",
         "created": "2025-07-29T11:37:03.756944Z",
-        "user": 15                                    // related user `id`
+        "user": 15                                    # related user `id`
     }
 ]
 ```
@@ -810,5 +811,148 @@ class QuestionDeleteView(APIView):
         self.check_object_permissions(request, question)    # check object-level permission
 
         ...
+```
+#
+### serializer relations:
+&lt;project-name&gt;/home/serializers.py:
+```python
+...
+from rest_framework import serializers
+
+...
+
+class QuestionSerializer(serializers.ModelSerializer):
+    ...
+
+    user = serializers.PrimaryKeyRelatedField(read_only=True)    # user ID (default)
+
+    ...
+
+...
+```
+
+**GET** `http://127.0.0.1:8000/questions/`
+
+
+response:
+```python
+[
+    {
+        ...
+        "user": 1        # id
+    },
+    {
+        ...
+        "user": 15
+    }
+]
+```
+&lt;project-name&gt;/home/serializers.py:
+```python
+...
+from rest_framework import serializers
+
+...
+
+class QuestionSerializer(serializers.ModelSerializer):
+    ...
+
+    user = serializers.StringRelatedField(read_only=True)    # __str__ value of user
+
+    ...
+
+...
+```
+
+**GET** `http://127.0.0.1:8000/questions/`
+
+
+response:
+```python
+[
+    {
+        ...
+        "user": "root"        # username
+    },
+    {
+        ...
+        "user": "mahdi"
+    }
+]
+```
+&lt;project-name&gt;/home/serializers.py:
+```python
+...
+from rest_framework import serializers
+
+...
+
+class QuestionSerializer(serializers.ModelSerializer):
+    ...
+
+    user = serializers.SlugRelatedField(read_only=True, slug_field='email')    # user's email (using slug_field)
+
+    ...
+
+...
+```
+
+**GET** `http://127.0.0.1:8000/questions/`
+
+
+response:
+```python
+[
+    {
+        ...
+        "user": "root@email.com"        # email
+    },
+    {
+        ...
+        "user": "mahdi@email.com"
+    }
+]
+```
+&lt;project-name&gt;/home/custom_relational_fields.py:
+```python
+from rest_framework import serializers
+
+class UserEmailNameRelationalField(serializers.RelatedField):
+    def to_representation(self, value):                            # custom output for related user
+        return f'{value.username} - {value.email}'
+```
+&lt;project-name&gt;/home/serializers.py:
+```python
+...
+from rest_framework import serializers
+from .custom_relational_fields import UserEmailNameRelationalField
+
+...
+
+class QuestionSerializer(serializers.ModelSerializer):
+    ...
+
+    user = UserEmailNameRelationalField(read_only=True)            # custom user display (rarely used)
+
+    ...
+
+...
+```
+
+**GET** `http://127.0.0.1:8000/questions/`
+
+
+response:
+```python
+[
+    {
+        ...
+        "user": "root - root@email.com"        # username - email
+    },
+    {
+        ...
+        "user": "mahdi - mahdi@email.com"
+    }
+]
 ```
 #
