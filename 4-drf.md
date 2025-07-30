@@ -17,6 +17,7 @@
 - [custom permissions](#custom-permissions)
 - [serializer relations](#serializer-relations)
 - [viewset](#viewset)
+- [throttling](#throttling)
 
 
 
@@ -1130,5 +1131,80 @@ response:
 {
     "message": "user deactivated"
 }
+```
+#
+### throttling:
+**Global throttling**:
+
+settings.py:
+```python
+REST_FRAMEWORK = {
+    ...
+    'DEFAULT_THROTTLE_CLASSES': [                        # apply throttling to all views by default
+        'rest_framework.throttling.AnonRateThrottle',    # limit anonymous users
+        'rest_framework.throttling.UserRateThrottle',    # limit authenticated users
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '3/hour',                                # anonymous: max 3 requests per hour
+        'user': '10/hour',                               # authenticated: max 10 requests per hour
+    }
+}
+```
+
+**Per-view throttling**:
+
+settings.py:
+```python
+REST_FRAMEWORK = {
+    ...
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '3/hour',            # anonymous: max 3 requests per hour
+        'user': '10/hour',           # authenticated: max 10 requests per hour
+    }
+}
+```
+&lt;project-name&gt;/home/views.py:
+```python
+...
+from rest_framework.views import APIView
+from rest_framework.throttling import UserRateThrottle, AnonRateThrottle
+
+...
+
+class QuestionListView(APIView):
+    throttle_classes = [UserRateThrottle, AnonRateThrottle]                # apply per-view throttling
+
+    ...
+
+...
+```
+
+**Scoped throttling**:
+
+settings.py:
+```python
+REST_FRAMEWORK = {
+    ...
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.ScopedRateThrottle'    # enable throttling scopes
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'questions': '5/minute',                          # limit for views with scope="questions"
+    }
+}
+```
+&lt;project-name&gt;/home/views.py:
+```python
+...
+from rest_framework.views import APIView
+
+...
+
+class QuestionListView(APIView):
+    throttle_scope = 'questions'                # link this view to "questions" scope
+
+    ...
+
+...
 ```
 #
