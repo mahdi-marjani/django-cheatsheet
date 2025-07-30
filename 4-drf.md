@@ -1139,6 +1139,8 @@ response:
 
 settings.py:
 ```python
+...
+
 REST_FRAMEWORK = {
     ...
     'DEFAULT_THROTTLE_CLASSES': [                        # apply throttling to all views by default
@@ -1156,6 +1158,8 @@ REST_FRAMEWORK = {
 
 settings.py:
 ```python
+...
+
 REST_FRAMEWORK = {
     ...
     'DEFAULT_THROTTLE_RATES': {
@@ -1184,6 +1188,8 @@ class QuestionListView(APIView):
 
 settings.py:
 ```python
+...
+
 REST_FRAMEWORK = {
     ...
     'DEFAULT_THROTTLE_CLASSES': [
@@ -1216,12 +1222,24 @@ pip install djangorestframework-simplejwt
 ```
 settings.py:
 ```python
+...
+from datetime import timedelta
+
+...
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',    # use JWT for authentication
     ],
     ...
 }
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),                      # default
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),                        # default
+    ...
+}
+
 ```
 &lt;project-name&gt;/accounts/urls.py:
 ```python
