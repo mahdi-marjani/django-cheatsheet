@@ -27,7 +27,7 @@ class QuestionCreateView(APIView):
         create new question
     """
 
-    serializer_class = QuestionSerializer()
+    serializer_class = QuestionSerializer
     permission_classes = [IsAuthenticated,]
 
     def post(self, request):
