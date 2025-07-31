@@ -1355,9 +1355,9 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'drf Project',
-    'DESCRIPTION': 'Your project description',
-    'VERSION': '1.0.0',
+    'TITLE': 'drf Project',                                          # title shown in Swagger/Redoc
+    'DESCRIPTION': 'Your project description',                       # project description
+    'VERSION': '1.0.0',                                              # API version
 }
 ```
 &lt;project-name&gt;/&lt;project-name&gt;/urls.py:
@@ -1370,13 +1370,13 @@ from drf_spectacular.views import (
 
 urlpatterns = [
     ...
-    path('schema/', SpectacularAPIView.as_view(), name='schema'),
-    path(
+    path('schema/', SpectacularAPIView.as_view(), name='schema'),    # endpoint for raw OpenAPI schema (JSON)
+    path(                                                            # Swagger UI: interactive documentation page
         'schema/swagger-ui/',
         SpectacularSwaggerView.as_view(url_name='schema'),
         name='swagger-ui'
     ),
-    path('schema/redoc/',
+    path('schema/redoc/',                                            # Redoc UI: alternative doc view (read-only)
         SpectacularRedocView.as_view(url_name='schema'),
         name='redoc'
     ),
@@ -1393,10 +1393,10 @@ from .serializers import QuestionSerializer
 
 class QuestionCreateView(APIView):
     """
-        create new question
+        create new question                  # shown in Swagger/Redoc as endpoint description.
     """
 
-    serializer_class = QuestionSerializer()
+    serializer_class = QuestionSerializer    # defines request/response structure for schema docs
 
     ...
 
@@ -1411,9 +1411,10 @@ settings.py:
 REST_FRAMEWORK = {
     ...
     'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.JSONRenderer',    # return only JSON (removes HTML/Browsable API)
     ]
 }
 
 ...
 ```
+#
