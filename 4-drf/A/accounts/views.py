@@ -6,6 +6,10 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
+from django.core.paginator import Paginator
+
 
 class UserRegister(APIView):
     def post(self, request):
@@ -50,3 +54,21 @@ class UserViewSet(viewsets.ViewSet):
         user.is_active = False
         user.save()
         return Response({'message': 'user deactivated'})
+
+
+class UserApi(APIView):
+    def get(self, request):
+        queryset = User.objects.all()
+        page_number = request.query_params.get('page', 1)
+        page_size = request.query_params.get('limit', 2)
+        paginator = Paginator(queryset, page_size)
+        srz_data = UserSerializer(instance=paginator.page(page_number), many=True)
+        return Response(srz_data.data)
+
+class Large(PageNumberPagination):
+    page_size = 2
+
+class UserListApi(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    pagination_class = Large

@@ -11,6 +11,8 @@ urlpatterns = [
     path('register/', views.UserRegister.as_view()),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('users/', views.UserApi.as_view()),
+    path('users_list/', views.UserListApi.as_view()),
 ]
 
 router = routers.SimpleRouter()
