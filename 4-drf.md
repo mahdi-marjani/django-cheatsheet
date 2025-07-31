@@ -21,6 +21,7 @@
 - [jwt](#jwt)
 - [swagger](#swagger)
 - [JSONRenderer](#JSONRenderer)
+- [pagination](#pagination)
 
 
 
@@ -1416,5 +1417,199 @@ REST_FRAMEWORK = {
 }
 
 ...
+```
+#
+### pagination:
+**Global pagination:**
+
+settings.py:
+```python
+...
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',     # page 1, 2, 3, ...
+    'PAGE_SIZE': 2,                                                                   # number of items per page
+}
+
+                                                                                      # or :
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',    # offset + limit style
+    'PAGE_SIZE': 2,                                                                   # default limit if not provided
+}
+
+...
+```
+&lt;project-name&gt;/accounts/views.py:
+```python
+...
+from django.contrib.auth.models import User
+from .serializers import UserSerializer
+from rest_framework import generics
+
+class UserListApi(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+```
+&lt;project-name&gt;/accounts/urls.py:
+```python
+from django.urls import path
+from . import views
+...
+
+app_name = 'accounts'
+urlpatterns = [
+    ...
+    path('users_list/', views.UserListApi.as_view()),
+]
+
+...
+```
+
+**GET** `http://127.0.0.1:8000/accounts/users_list/?page=2`
+
+
+response:
+```python
+{
+  "count": 12,
+  "next": "http://127.0.0.1:8000/accounts/users_list/?page=3",
+  "previous": "http://127.0.0.1:8000/accounts/users_list/?page=1",
+  "results": [
+    {
+      "id": 3,
+      "username": "user3"
+    },
+    ...
+  ]
+}
+```
+
+**GET** `http://127.0.0.1:8000/accounts/users_list/?limit=2&offset=4`
+
+
+response:
+```python
+{
+  "count": 12,
+  "next": "http://127.0.0.1:8000/accounts/users_list/?limit=2&offset=6",
+  "previous": "http://127.0.0.1:8000/accounts/users_list/?limit=2&offset=2",
+  "results": [
+    {
+      "id": 5,
+      "username": "user5"
+    },
+    ...
+  ]
+}
+```
+
+**Standard pagination (per-view):**
+
+&lt;project-name&gt;/accounts/views.py:
+```python
+...
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
+from django.contrib.auth.models import User
+from .serializers import UserSerializer
+
+...
+
+class Large(PageNumberPagination):
+    page_size = 2                                     # custom page size for this view only
+
+class UserListApi(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    pagination_class = Large                         # apply pagination to this view only
+```
+&lt;project-name&gt;/accounts/urls.py:
+```python
+from django.urls import path
+from . import views
+...
+
+app_name = 'accounts'
+urlpatterns = [
+    ...
+    path('users_list/', views.UserListApi.as_view()),
+]
+
+...
+```
+
+**GET** `http://127.0.0.1:8000/accounts/users_list/?page=1`
+
+
+response:
+```python
+{
+  "count": 12,
+  "next": "http://127.0.0.1:8000/accounts/users_list/?page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "username": "user1"
+    },
+    ...
+  ]
+}
+```
+
+**Custom pagination (manual method):**
+
+&lt;project-name&gt;/accounts/views.py:
+```python
+...
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+from django.core.paginator import Paginator
+from .serializers import UserSerializer
+
+...
+
+class UserApi(APIView):
+    def get(self, request):
+        queryset = User.objects.all()
+        page_number = request.query_params.get('page', 1)    # get page number from query params
+        page_size = request.query_params.get('limit', 2)     # get page size from query params
+        paginator = Paginator(queryset, page_size)           # manually paginate queryset
+        srz_data = UserSerializer(
+            instance=paginator.page(page_number),
+            many=True
+        )
+        return Response(srz_data.data)                       # return paginated serialized data
+
+```
+&lt;project-name&gt;/accounts/urls.py:
+```python
+from django.urls import path
+from . import views
+...
+
+app_name = 'accounts'
+urlpatterns = [
+    ...
+    path('users/', views.UserApi.as_view()),
+]
+
+...
+```
+
+**GET** `http://127.0.0.1:8000/accounts/users/?page=2&limit=3`
+
+
+response:
+```python
+[
+  {
+    "id": 4,
+    "username": "user4"
+  },
+  ...
+]
 ```
 #
