@@ -72,3 +72,11 @@ class UserListApi(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = Large
+
+class UserApi(APIView):
+    "Get all users info"
+
+    def get(self, request):
+        queryset = User.objects.all()
+        srz_data = UserSerializer(instance=queryset, many=True)
+        return Response(data=srz_data.data)

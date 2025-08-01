@@ -13,6 +13,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('users/', views.UserApi.as_view()),
     path('users_list/', views.UserListApi.as_view()),
+    path('users_data/', views.UserApi.as_view()),
 ]
 
 router = routers.SimpleRouter()
