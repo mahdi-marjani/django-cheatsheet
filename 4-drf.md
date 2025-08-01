@@ -22,6 +22,7 @@
 - [swagger](#swagger)
 - [JSONRenderer](#JSONRenderer)
 - [pagination](#pagination)
+- [metadata](#metadata)
 
 
 
@@ -1611,5 +1612,77 @@ response:
   },
   ...
 ]
+```
+#
+### metadata:
+&lt;project-name&gt;/accounts/views.py:
+```python
+...
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+from .serializers import UserSerializer
+
+...
+
+class UserApi(APIView):
+    "Get all users info"
+
+    def get(self, request):
+        queryset = User.objects.all()
+        srz_data = UserSerializer(instance=queryset, many=True)
+        return Response(data=srz_data.data)
+```
+&lt;project-name&gt;/accounts/urls.py:
+```python
+from django.urls import path
+from . import views
+...
+
+app_name = 'accounts'
+urlpatterns = [
+    ...
+    path('users_data/', views.UserApi.as_view()),
+]
+
+...
+```
+&lt;project-name&gt;/permissions.py:
+```python
+...
+from rest_framework.metadata import BaseMetadata
+
+class CustomMetadata(BaseMetadata):
+    def determine_metadata(self, request, view):
+        return {
+            'name': view.get_view_name(),
+            'renderers': [renderer.media_type for renderer in view.renderer_classes],
+            'parsers': [parser.media_type for parser in view.parser_classes]
+        }
+```
+settings.py:
+```python
+REST_FRAMEWORK = {
+    ...
+    'DEFAULT_METADATA_CLASS': 'permissions.CustomMetadata',
+}
+```
+
+**OPTIONS** `http://127.0.0.1:8000/accounts/users_data/`
+
+
+response:
+```python
+{
+    "name": "User Api",
+    "renderers": [
+        "application/json"
+    ],
+    "parsers": [
+        "application/json",
+        "application/x-www-form-urlencoded",
+        "multipart/form-data"
+    ]
+}
 ```
 #
