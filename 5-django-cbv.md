@@ -5,6 +5,7 @@
 - [ListView](#ListView)
 - [DetailView](#DetailView)
 - [FormView](#FormView)
+- [CreateView](#CreateView)
 
 ### View:
 views.py:
@@ -282,6 +283,64 @@ class CreateCarView(FormView):
             owner=data['owner'],
             year=data['year'],
         )
+```
+create.html:
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <form action="" method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Create">
+    </form>
+
+{% endblock %}
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    ...
+    path('create/', views.CreateCarView.as_view(), name='car_create'),
+]
+```
+#
+### CreateView:
+views.py:
+```python
+...
+from .models import Car
+from django.views.generic import CreateView
+from django.urls import reverse_lazy
+from django.contrib import messages
+
+...
+
+class CreateCarView(CreateView):
+    model = Car
+    fields = ['name', 'year']
+    template_name = 'home/create.html'
+    success_url = reverse_lazy('home:home')
+
+    def form_valid(self, form):
+        car = form.save(commit=False)
+        user = self.request.user.username
+        if user:
+            car.owner = user
+        else:
+            car.owner = 'anonymous'
+        car.save()
+        messages.success(
+            self.request,
+            'created car successfully',
+            'success'
+        )
+        return super().form_valid(form)
 ```
 create.html:
 ```html
