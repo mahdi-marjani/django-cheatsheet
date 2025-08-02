@@ -65,14 +65,7 @@ views.py:
 from django.views.generic import RedirectView
 from .models import Car
 
-
-class Home(TemplateView):
-    template_name = 'home/home.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['cars'] = Car.objects.all()
-        return context
+...
 
 class Two(RedirectView):
     # url = 'https://google.com'                            # redirect to external site
@@ -96,7 +89,7 @@ from . import views
 
 app_name = 'home'
 urlpatterns = [
-    path('', views.Home.as_view(), name='home'),                          # home page
+    ...
     path('two/<int:id>/<str:name>/', views.Two.as_view(), name='two'),    # redirect view
 ]
 ```
