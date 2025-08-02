@@ -4,4 +4,10 @@
 
     <h2>Home</h2>
 
+    {% for car in cars %}
+        <p>
+            {{ car.name }}
+        </p>
+    {% endfor %}
+
 {% endblock %}
