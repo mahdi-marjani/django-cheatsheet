@@ -1,26 +1,19 @@
-from django.views.generic import TemplateView, RedirectView
 from .models import Car
+from django.views.generic.list import ListView
 
-
-class Home(TemplateView):
+class Home(ListView):
     template_name = 'home/home.html'
+    # model = Car
+    # queryset = Car.objects.filter(year__gte=2023)
+    context_object_name = 'cars' # default : object_list
+    # ordering = 'year'
+    # allow_empty = False
 
+    def get_queryset(self):
+        result = Car.objects.filter(year__gte=2023)
+        return result
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cars'] = Car.objects.all()
+        context['username'] = 'jack'
         return context
-
-class Two(RedirectView):
-    # url = 'https://google.com'
-    # pattern_name = 'home:home'
-    # url = '/'
-    url = '/home/%(id)i/%(name)s'
-    query_string = True
-
-    def get_redirect_url(self, *args, **kwargs):
-        # print('processing your request...')
-        # print(kwargs['id'])
-        # print(kwargs['name'])
-        # kwargs.pop('id')
-        # kwargs.pop('name')
-        return super().get_redirect_url(*args, **kwargs)
