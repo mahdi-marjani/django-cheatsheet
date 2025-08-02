@@ -65,8 +65,6 @@ views.py:
 from django.views.generic import RedirectView
 from .models import Car
 
-...
-
 class Two(RedirectView):
     # url = 'https://google.com'                            # redirect to external site
     # pattern_name = 'home:home'                            # redirect to named route
@@ -89,7 +87,6 @@ from . import views
 
 app_name = 'home'
 urlpatterns = [
-    ...
     path('two/<int:id>/<str:name>/', views.Two.as_view(), name='two'),    # redirect view
 ]
 ```
