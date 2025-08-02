@@ -1,30 +1,31 @@
 from .models import Car
-from django.views.generic.list import ListView
-from django.views.generic.detail import DetailView
+from django.views.generic import ListView, FormView
+from .forms import CarCreateForm
+from django.urls import reverse_lazy
+from django.contrib import messages
 
 class Home(ListView):
     template_name = 'home/home.html'
     model = Car
     context_object_name = 'cars'
 
-class CarDetail(DetailView):
-    template_name = 'home/detail.html'
-    # model = Car
-    # context_object_name = 'car'
-    # pk_url_kwarg = 'my_pk'
-    # slug_field = 'name'
-    # slug_url_kwarg = 'my_slug'
-    # queryset = Car.objects.filter(year__gte=2023)
+class CreateCarView(FormView):
+    template_name = 'home/create.html'
+    form_class = CarCreateForm
+    success_url = reverse_lazy('home:home')
 
-    # def get_queryset(self):
-    #     if self.request.user.is_authenticated:
-    #         return Car.objects.filter(name=self.kwargs['my_slug'])
-    #     else:
-    #         Car.objects.none()
-
-    def get_object(self, queryset = None):
-        return Car.objects.get(
-            year = self.kwargs['year'],
-            name = self.kwargs['name'],
-            owner = self.kwargs['owner'],
+    def form_valid(self, form):
+        self._create_car(form.cleaned_data)
+        messages.success(
+            self.request,
+            'created car successfully',
+            'success'
+        )
+        return super().form_valid(form)
+    
+    def _create_car(self, data):
+        Car.objects.create(
+            name=data['name'],
+            owner=data['owner'],
+            year=data['year'],
         )
