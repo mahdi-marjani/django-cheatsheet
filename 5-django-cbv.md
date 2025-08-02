@@ -4,6 +4,7 @@
 - [RedirectView](#RedirectView)
 - [ListView](#ListView)
 - [DetailView](#DetailView)
+- [FormView](#FormView)
 
 ### View:
 views.py:
@@ -30,6 +31,18 @@ class Home(View):
 ```
 #
 ### TemplateView:
+models.py:
+```python
+from django.db import models
+
+class Car(models.Model):
+    name = models.CharField(max_length=100)
+    owner = models.CharField(max_length=100)
+    year = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return self.name
+```
 views.py:
 ```python
 from django.views.generic import TemplateView
@@ -225,5 +238,74 @@ detail.html:
     <p>{{ object.year }}</p>
 
 {% endblock %}
+```
+#
+### FormView:
+forms.py:
+```python
+from django import forms
+from .models import Car
+
+class CarCreateForm(forms.ModelForm):
+    class Meta:
+        model = Car
+        fields = '__all__'
+```
+views.py:
+```python
+...
+from .models import Car
+from django.views.generic import FormView
+from .forms import CarCreateForm
+from django.urls import reverse_lazy
+from django.contrib import messages
+
+...
+
+class CreateCarView(FormView):
+    template_name = 'home/create.html'
+    form_class = CarCreateForm
+    success_url = reverse_lazy('home:home')
+
+    def form_valid(self, form):
+        self._create_car(form.cleaned_data)
+        messages.success(
+            self.request,
+            'created car successfully',
+            'success'
+        )
+        return super().form_valid(form)
+    
+    def _create_car(self, data):
+        Car.objects.create(
+            name=data['name'],
+            owner=data['owner'],
+            year=data['year'],
+        )
+```
+create.html:
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <form action="" method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Create">
+    </form>
+
+{% endblock %}
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    ...
+    path('create/', views.CreateCarView.as_view(), name='car_create'),
+]
 ```
 #
