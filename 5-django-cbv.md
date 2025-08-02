@@ -2,6 +2,7 @@
 - [View](#View)
 - [TemplateView](#TemplateView)
 - [RedirectView](#RedirectView)
+- [ListView](#ListView)
 
 ### View:
 views.py:
@@ -92,6 +93,56 @@ app_name = 'home'
 urlpatterns = [
     path('', views.Home.as_view(), name='home'),                          # home page
     path('two/<int:id>/<str:name>/', views.Two.as_view(), name='two'),    # redirect view
+]
+```
+#
+### ListView:
+views.py:
+```python
+from .models import Car
+from django.views.generic.list import ListView
+
+class Home(ListView):
+    template_name = 'home/home.html'                    # specify template to render
+    # model = Car                                       # optionally define model (auto queryset = Car.objects.all())
+    # queryset = Car.objects.filter(year__gte=2023)     # manually define queryset (alternative to get_queryset)
+    context_object_name = 'cars'                        # name used in template (default: object_list)
+    # ordering = 'year'                                 # sort results by field
+    # allow_empty = False                               # raise 404 if no objects found
+
+    def get_queryset(self):                             # custom queryset logic (e.g. filter by year)
+        result = Car.objects.filter(year__gte=2023)
+        return result
+    
+    def get_context_data(self, **kwargs):               # add extra data to context
+        context = super().get_context_data(**kwargs)
+        context['username'] = 'jack'                    # example extra context
+        return context
+```
+home.html:
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>Home {{ username }}</h2>        {# using extra context data #}
+
+    {% for car in cars %}               {# iterating over context_object_name = 'cars' #}
+        <p>
+            {{ car.name }}
+        </p>
+    {% endfor %}
+
+{% endblock %}
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    path('', views.Home.as_view(), name='home'),    # Home view shows list of filtered Car objects
 ]
 ```
 #
