@@ -3,6 +3,7 @@
 - [TemplateView](#TemplateView)
 - [RedirectView](#RedirectView)
 - [ListView](#ListView)
+- [DetailView](#DetailView)
 
 ### View:
 views.py:
@@ -144,5 +145,85 @@ app_name = 'home'
 urlpatterns = [
     path('', views.Home.as_view(), name='home'),    # Home view shows list of filtered Car objects
 ]
+```
+#
+### DetailView:
+views.py:
+```python
+from .models import Car
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+
+class Home(ListView):
+    template_name = 'home/home.html'
+    model = Car
+    context_object_name = 'cars'
+
+class CarDetail(DetailView):
+    template_name = 'home/detail.html'                 # template to render detail page
+    # model = Car                                      # model used to get object
+    # context_object_name = 'car'                      # variable name in template (default: 'object')
+    # pk_url_kwarg = 'my_pk'                           # pass pk with custom name in url (e.g. <int:my_pk>/)
+    # slug_field = 'name'                              # fetch object by slug
+    # slug_url_kwarg = 'my_slug'                       # pass slug with custom name in url (e.g. <slug:my_slug>/)
+    # queryset = Car.objects.filter(year__gte=2023)    # custom queryset for filter visible objects
+
+    # def get_queryset(self):                          # customize more queryset
+    #     if self.request.user.is_authenticated:
+    #         return Car.objects.filter(
+    #             name=self.kwargs['my_slug']
+    #         )
+    #     else:
+    #         return Car.objects.none()
+
+    def get_object(self, queryset = None):             # override object fetching logic
+        return Car.objects.get(
+            year = self.kwargs['year'],                # access URL param 'year'
+            name = self.kwargs['name'],                # access URL param 'name'
+            owner = self.kwargs['owner'],              # access URL param 'owner'
+        )
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    path('', views.Home.as_view(), name='home'),    # root path shows list of cars
+    path(                                           # detail view expects year, name, and owner
+        '<int:year>/<str:name>/<str:owner>/',
+        views.CarDetail.as_view(),
+        name='car_detail'
+    ),
+]
+```
+home.html:
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>Home {{ username }}</h2>
+
+    {% for car in cars %}
+        <a href="{% url 'home:car_detail' car.year car.name car.owner %}">    {# link to CarDetail view using URL params #}
+            {{ car.name }}
+        </a>
+    {% endfor %}
+
+{% endblock %}
+```
+detail.html:
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <p>{{ object.name }}</p>        {# object refers to the Car instance by default #}
+    <p>{{ object.owner }}</p>
+    <p>{{ object.year }}</p>
+
+{% endblock %}
 ```
 #
