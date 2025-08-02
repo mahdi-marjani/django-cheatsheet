@@ -1626,7 +1626,7 @@ from .serializers import UserSerializer
 ...
 
 class UserApi(APIView):
-    "Get all users info"
+    "Get all users info"                                            # this appears in metadata as 'description'
 
     def get(self, request):
         queryset = User.objects.all()
@@ -1642,7 +1642,7 @@ from . import views
 app_name = 'accounts'
 urlpatterns = [
     ...
-    path('users_data/', views.UserApi.as_view()),
+    path('users_data/', views.UserApi.as_view()),    # endpoint for UserApi view
 ]
 
 ...
@@ -1655,16 +1655,16 @@ from rest_framework.metadata import BaseMetadata
 class CustomMetadata(BaseMetadata):
     def determine_metadata(self, request, view):
         return {
-            'name': view.get_view_name(),
-            'renderers': [renderer.media_type for renderer in view.renderer_classes],
-            'parsers': [parser.media_type for parser in view.parser_classes]
+            'name': view.get_view_name(),                                  # view name (User Api)
+            'renderers': [r.media_type for r in view.renderer_classes],    # supported response formats
+            'parsers': [p.media_type for p in view.parser_classes]         # supported request formats
         }
 ```
 settings.py:
 ```python
 REST_FRAMEWORK = {
     ...
-    'DEFAULT_METADATA_CLASS': 'permissions.CustomMetadata',
+    'DEFAULT_METADATA_CLASS': 'permissions.CustomMetadata',    # use custom metadata class globally
 }
 ```
 
