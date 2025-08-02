@@ -62,7 +62,7 @@ home.html:
 ### RedirectView:
 views.py:
 ```python
-from django.views.generic import TemplateView, RedirectView
+from django.views.generic import RedirectView
 from .models import Car
 
 
