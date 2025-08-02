@@ -247,7 +247,7 @@ forms.py:
 from django import forms
 from .models import Car
 
-class CarCreateForm(forms.ModelForm):
+class CarCreateForm(forms.ModelForm):    # form based on Car model
     class Meta:
         model = Car
         fields = '__all__'
@@ -264,12 +264,12 @@ from django.contrib import messages
 ...
 
 class CreateCarView(FormView):
-    template_name = 'home/create.html'
-    form_class = CarCreateForm
-    success_url = reverse_lazy('home:home')
+    template_name = 'home/create.html'            # template to render the form
+    form_class = CarCreateForm                    # form class to use
+    success_url = reverse_lazy('home:home')       # redirect after successful form submission
 
-    def form_valid(self, form):
-        self._create_car(form.cleaned_data)
+    def form_valid(self, form):                   # called when form is valid
+        self._create_car(form.cleaned_data)       # manually create a Car instance
         messages.success(
             self.request,
             'created car successfully',
@@ -277,7 +277,7 @@ class CreateCarView(FormView):
         )
         return super().form_valid(form)
     
-    def _create_car(self, data):
+    def _create_car(self, data):                  # custom method to create Car
         Car.objects.create(
             name=data['name'],
             owner=data['owner'],
@@ -290,7 +290,7 @@ create.html:
 
 {% block content %}
 
-    <form action="" method="post" novalidate>
+    <form action="" method="post" novalidate>    {# render the form for car creation #}
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Create">
@@ -323,18 +323,18 @@ from django.contrib import messages
 
 class CreateCarView(CreateView):
     model = Car
-    fields = ['name', 'year']
-    template_name = 'home/create.html'
-    success_url = reverse_lazy('home:home')
+    fields = ['name', 'year']                    # fields to include in form (owner set manually)
+    template_name = 'home/create.html'           # template to render the form
+    success_url = reverse_lazy('home:home')      # redirect after successful creation
 
-    def form_valid(self, form):
-        car = form.save(commit=False)
+    def form_valid(self, form):                  # called when form is valid
+        car = form.save(commit=False)            # create Car instance but don't save yet
         user = self.request.user.username
         if user:
             car.owner = user
         else:
             car.owner = 'anonymous'
-        car.save()
+        car.save()                               # save Car to database
         messages.success(
             self.request,
             'created car successfully',
@@ -348,7 +348,7 @@ create.html:
 
 {% block content %}
 
-    <form action="" method="post" novalidate>
+    <form action="" method="post" novalidate>    {# render the car creation form #}
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Create">
