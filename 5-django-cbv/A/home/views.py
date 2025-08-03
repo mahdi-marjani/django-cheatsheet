@@ -1,14 +1,15 @@
+from rest_framework.generics import (
+    ListAPIView, RetrieveAPIView
+)
 from .models import Car
-from django.views.generic import ListView, MonthArchiveView
+from .serializers import CarSerializer
 
-class Home(ListView):
-    template_name = 'home/home.html'
-    model = Car
-    context_object_name = 'cars'
 
-class MonthCar(MonthArchiveView):
-    model = Car
-    date_field = 'created'
-    template_name = 'home/home.html'
-    context_object_name = 'cars'
-    # month_format = '%m'
+class Home(ListAPIView):
+    serializer_class = CarSerializer
+    queryset = Car.objects.all()
+
+class SingleCar(RetrieveAPIView):
+    serializer_class = CarSerializer
+    queryset = Car.objects.all()
+    lookup_field = 'name'

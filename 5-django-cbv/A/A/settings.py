@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'home.apps.HomeConfig',
 
     # Third-party apps
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
