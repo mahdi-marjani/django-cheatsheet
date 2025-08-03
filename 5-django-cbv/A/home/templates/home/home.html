@@ -7,6 +7,9 @@
     {% for car in cars %}
         <p>
             {{ car.name }}
+            <a href="{% url 'home:car_delete' car.id %}">
+                Delete
+            </a>
         </p>
     {% endfor %}
 
