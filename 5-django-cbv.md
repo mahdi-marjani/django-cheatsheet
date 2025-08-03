@@ -10,7 +10,7 @@
 - [UpdateView](#UpdateView)
 - [LoginView](#LoginView)
 - [LogoutView](#LogoutView)
-- [MonthArchiveView (show data by date)](#LogoutView-show-data-by-date)
+- [MonthArchiveView (show data by date)](#MonthArchiveView-show-data-by-date)
 
 ### View:
 views.py:
