@@ -703,8 +703,8 @@ from . import views
 
 app_name = 'home'
 urlpatterns = [
-    # path('<int:pk>/', views.CarDelete.as_view())        # delete car by id (e.g. /3/) (method: DELETE)
-    path('<str:car_name>/', views.CarDelete.as_view())    # alternative: delete by name (e.g. /BMW/) (method: DELETE)
+    # path('delete/<int:pk>/', views.CarDelete.as_view())        # delete car by id (e.g. /3/) (method: DELETE)
+    path('delete/<str:car_name>/', views.CarDelete.as_view())    # alternative: delete by name (e.g. /BMW/) (method: DELETE)
 ]
 ```
 #
