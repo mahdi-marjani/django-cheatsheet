@@ -17,6 +17,7 @@
 - [UpdateAPIView](#UpdateAPIView)
 - [ListCreateAPIView](#ListCreateAPIView)
 - [GenericAPIView](#GenericAPIView)
+- [mixin](#mixin)
 
 ### View:
 views.py:
@@ -833,6 +834,50 @@ from . import views
 app_name = 'home'
 urlpatterns = [
     path('<int:pk>/', views.Home.as_view()),    # retrieve one car by id (e.g. /3/) (method: GET)
+]
+```
+#
+### mixin:
+views.py:
+```python
+from rest_framework.generics import (
+    GenericAPIView
+)
+from .models import Car
+from .serializers import CarSerializer
+from rest_framework.response import Response
+from rest_framework.mixins import (
+    RetrieveModelMixin, DestroyModelMixin
+)
+
+class Home(RetrieveModelMixin, DestroyModelMixin, GenericAPIView):
+    serializer_class = CarSerializer
+    queryset = Car.objects.all()
+
+    def retrieve(self, request, *args, **kwargs):
+        # override retrieve() to customize how data is returned
+        # don't override get() directly — override retrieve() if you're using RetrieveModelMixin
+
+        instance = self.get_object()
+        if instance.name == 'BMW':                        # custom rule: block response if car is BMW
+            return Response('Sorry...')
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)    # GET request → uses retrieve() internally
+    
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)     # DELETE request → uses destroy() from mixin
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    path('<int:pk>/', views.Home.as_view()),    # retrieve or delete one car by id (GET / DELETE)
 ]
 ```
 #
