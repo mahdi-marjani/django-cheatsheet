@@ -4,12 +4,23 @@ from rest_framework.generics import (
 from .models import Car
 from .serializers import CarSerializer
 from rest_framework.response import Response
+from rest_framework.mixins import (
+    RetrieveModelMixin, DestroyModelMixin
+)
 
-class Home(GenericAPIView):
+class Home(RetrieveModelMixin, DestroyModelMixin, GenericAPIView):
     serializer_class = CarSerializer
     queryset = Car.objects.all()
 
-    def get(self, request, *args, **kwargs):
+    def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
-        ser_data = self.get_serializer(instance).data
-        return Response(ser_data)
+        if instance.name == 'BMW':
+            return Response('Sorry...')
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+    
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
