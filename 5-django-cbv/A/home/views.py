@@ -11,3 +11,6 @@ class Home(ListView):
 class UserLogin(auth_views.LoginView):
     template_name = 'home/login.html'
     next_page = reverse_lazy('home:home')
+
+class UserLogout(auth_views.LogoutView):
+    next_page = reverse_lazy('home:home')
