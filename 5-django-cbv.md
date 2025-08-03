@@ -13,6 +13,7 @@
 - [MonthArchiveView (show data by date)](#MonthArchiveView-show-data-by-date)
 - [ListAPIView & RetrieveAPIView](#listapiview--retrieveapiview)
 - [DestroyAPIView](#DestroyAPIView)
+- [CreateAPIView](#CreateAPIView)
 
 ### View:
 views.py:
@@ -706,5 +707,49 @@ urlpatterns = [
     # path('delete/<int:pk>/', views.CarDelete.as_view())        # delete car by id (e.g. /3/) (method: DELETE)
     path('delete/<str:car_name>/', views.CarDelete.as_view())    # alternative: delete by name (e.g. /BMW/) (method: DELETE)
 ]
+```
+#
+### CreateAPIView:
+views.py:
+```python
+from rest_framework.generics import (
+    CreateAPIView
+)
+from .models import Car
+from .serializers import CarSerializer
+
+class CarCreate(CreateAPIView):            # Send a POST request to create a new Car instance
+    serializer_class = CarSerializer
+    queryset = Car.objects.all()
+```
+urls.py
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    path('create/', views.CarCreate.as_view()),    # URL to create a new car (method: POST)
+]
+```
+models.py:
+```python
+from django.db import models
+
+class Car(models.Model):
+    name = models.CharField(max_length=100)
+    owner = models.CharField(max_length=100)
+    year = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return self.name
+```
+request body:
+```json
+{
+    "name": "bmw",
+    "owner": "jack",
+    "year": 2023
+}
 ```
 #
