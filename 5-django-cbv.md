@@ -8,6 +8,7 @@
 - [CreateView](#CreateView)
 - [DeleteView](#DeleteView)
 - [UpdateView](#UpdateView)
+- [LoginView](#LoginView)
 
 ### View:
 views.py:
@@ -496,6 +497,41 @@ urlpatterns = [
     path('', views.Home.as_view(), name='home'),                                # homepage with car list
     ...
     path('update/<int:pk>/', views.CarUpdate.as_view(), name='car_update'),     # URL for updating a specific car
+]
+```
+#
+### LoginView:
+views.py:
+```python
+from django.urls import reverse_lazy
+from django.contrib.auth import views as auth_views
+
+class UserLogin(auth_views.LoginView):
+    template_name = 'accounts/login.html'                # template contains login form
+    next_page = reverse_lazy('home:home')                # redirect after successful login
+```
+login.html:
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <form action="" method="post">                {# submit login credentials #}
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Login">
+    </form>
+
+{% endblock %}
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'accounts'
+urlpatterns = [
+    path('login/', views.UserLogin.as_view(), name='login')    # URL for user login
 ]
 ```
 #
