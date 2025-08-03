@@ -659,13 +659,13 @@ from .serializers import CarSerializer
 
 
 class Home(ListAPIView):
-    serializer_class = CarSerializer
-    queryset = Car.objects.all()
+    serializer_class = CarSerializer        # serializer to convert Car objects to JSON
+    queryset = Car.objects.all()            # fetch all Car records from DB
 
 class SingleCar(RetrieveAPIView):
-    serializer_class = CarSerializer
-    queryset = Car.objects.all()
-    lookup_field = 'name'
+    serializer_class = CarSerializer        # serializer for single Car object
+    queryset = Car.objects.all()            # search in all cars
+    lookup_field = 'name'                   # get single Car by its name (instead of default 'pk')
 ```
 urls.py:
 ```python
@@ -674,9 +674,9 @@ from . import views
 
 app_name = 'home'
 urlpatterns = [
-    path('', views.Home.as_view()),
-    # path('<int:pk>/', views.SingleCar.as_view())
-    path('<str:name>/', views.SingleCar.as_view())
+    path('', views.Home.as_view()),                     # list all cars
+    # path('<int:pk>/', views.SingleCar.as_view()),     # retrieve one car by ID (e.g. /3/)
+    path('<str:name>/', views.SingleCar.as_view()),     # retrieve one car by name (e.g. /BMW/)
 ]
 ```
 #
