@@ -9,6 +9,7 @@
 - [DeleteView](#DeleteView)
 - [UpdateView](#UpdateView)
 - [LoginView](#LoginView)
+- [LogoutView](#LogoutView)
 
 ### View:
 views.py:
@@ -532,6 +533,31 @@ from . import views
 app_name = 'accounts'
 urlpatterns = [
     path('login/', views.UserLogin.as_view(), name='login')    # URL for user login
+]
+```
+#
+### LogoutView:
+views.py:
+```python
+from django.urls import reverse_lazy
+from django.contrib.auth import views as auth_views
+
+class UserLogin(auth_views.LoginView):
+    template_name = 'accounts/login.html'
+    next_page = reverse_lazy('home:home')
+
+class UserLogout(auth_views.LogoutView):
+    next_page = reverse_lazy('home:home')                # redirect after successful logout
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'accounts'
+urlpatterns = [
+    path('login/', views.UserLogin.as_view(), name='login'),
+    path('logout/', views.UserLogout.as_view(), name='logout'),     # URL for user logout
 ]
 ```
 #
