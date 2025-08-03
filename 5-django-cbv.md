@@ -7,6 +7,7 @@
 - [FormView](#FormView)
 - [CreateView](#CreateView)
 - [DeleteView](#DeleteView)
+- [UpdateView](#UpdateView)
 
 ### View:
 views.py:
@@ -428,6 +429,73 @@ app_name = 'home'
 urlpatterns = [
     path('', views.Home.as_view(), name='home'),                                # homepage with car list
     path('delete/<int:pk>/', views.CarDelete.as_view(), name='car_delete'),     # URL for deleting car by pk
+]
+```
+#
+### UpdateView:
+views.py:
+```python
+from .models import Car
+from django.views.generic import ListView, UpdateView
+from django.urls import reverse_lazy
+
+class Home(ListView):                            # list all cars
+    template_name = 'home/home.html'
+    model = Car
+    context_object_name = 'cars'
+
+...
+
+class CarUpdate(UpdateView):
+    model = Car                                  # model instance to update
+    fields = ['name', 'year']                    # fields to update
+    success_url = reverse_lazy('home:home')      # redirect after successful update
+    template_name = 'home/update.html'           # template contain update form
+```
+home.html:
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>Home {{ username }}</h2>
+
+    {% for car in cars %}
+        <p>
+            {{ car.name }}
+            ...
+            <a href="{% url 'home:car_update' car.id %}">    {# link to the car update form #}
+                Update
+            </a>
+        </p>
+    {% endfor %}
+
+{% endblock %}
+```
+update.html:
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <form action="" method="post">                {# submit the form to update the car #}
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Update">
+    </form>
+
+{% endblock %}
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    path('', views.Home.as_view(), name='home'),                                # homepage with car list
+    ...
+    path('update/<int:pk>/', views.CarUpdate.as_view(), name='car_update'),     # URL for updating a specific car
 ]
 ```
 #
