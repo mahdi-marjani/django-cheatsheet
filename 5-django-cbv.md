@@ -14,6 +14,7 @@
 - [ListAPIView & RetrieveAPIView](#listapiview--retrieveapiview)
 - [DestroyAPIView](#DestroyAPIView)
 - [CreateAPIView](#CreateAPIView)
+- [UpdateAPIView](#UpdateAPIView)
 
 ### View:
 views.py:
@@ -722,7 +723,7 @@ class CarCreate(CreateAPIView):            # Send a POST request to create a new
     serializer_class = CarSerializer
     queryset = Car.objects.all()
 ```
-urls.py
+urls.py:
 ```python
 from django.urls import path
 from . import views
@@ -751,5 +752,31 @@ request body:
     "owner": "jack",
     "year": 2023
 }
+```
+#
+### UpdateAPIView:
+views.py:
+```python
+from rest_framework.generics import (
+    UpdateAPIView
+)
+from .models import Car
+from .serializers import CarSerializer
+
+class CarUpdate(UpdateAPIView):            # Send PUT or PATCH request to update a Car instance
+    serializer_class = CarSerializer
+    queryset = Car.objects.all()
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    path('update/<int:pk>/', views.CarUpdate.as_view()),    # URL to update a car by its ID
+                                                            # PUT → must send all fields (full update)
+                                                            # PATCH → only send fields you want to change (partial update)
+]
 ```
 #
