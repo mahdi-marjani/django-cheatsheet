@@ -4,6 +4,15 @@ from . import views
 app_name = 'home'
 urlpatterns = [
     path('', views.Home.as_view(), name='home'),
-    path('login/', views.UserLogin.as_view(), name='login'),
-    path('logout/', views.UserLogout.as_view(), name='logout'),
+    # path(
+    #     '<int:year>/<int:month>/',
+    #     views.MonthCar.as_view(),
+    #     name='home'
+    # ),
+    path(
+        '<int:year>/<str:month>/',
+        views.MonthCar.as_view(),
+        name='home'
+    ),
+    
 ]
