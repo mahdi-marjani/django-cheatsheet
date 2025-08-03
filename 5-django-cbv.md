@@ -6,6 +6,7 @@
 - [DetailView](#DetailView)
 - [FormView](#FormView)
 - [CreateView](#CreateView)
+- [DeleteView](#DeleteView)
 
 ### View:
 views.py:
@@ -365,6 +366,68 @@ app_name = 'home'
 urlpatterns = [
     ...
     path('create/', views.CreateCarView.as_view(), name='car_create'),
+]
+```
+#
+### DeleteView:
+views.py:
+```python
+from .models import Car
+from django.views.generic import ListView, DeleteView
+from django.urls import reverse_lazy
+
+class Home(ListView):                            # list all cars
+    template_name = 'home/home.html'
+    model = Car
+    context_object_name = 'cars'
+
+class CarDelete(DeleteView):
+    model = Car                                  # model instance to delete
+    success_url = reverse_lazy('home:home')      # redirect after successful deletion
+    template_name = 'home/delete.html'           # confirmation template to show before deletion
+```
+home.html:
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>Home {{ username }}</h2>
+
+    {% for car in cars %}
+        <p>
+            {{ car.name }}
+            <a href="{% url 'home:car_delete' car.id %}">    {# link to confirmation page for car deletion #}
+                Delete
+            </a>
+        </p>
+    {% endfor %}
+
+{% endblock %}
+```
+delete.html:
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <form action="" method="post">                            {# submit confirmation to delete the object #}
+        {% csrf_token %}
+        <p>Are really want to delete "{{ object }}"?</p>
+        <input type="submit" value="Delete">
+    </form>
+
+{% endblock %}
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    path('', views.Home.as_view(), name='home'),                                # homepage with car list
+    path('delete/<int:pk>/', views.CarDelete.as_view(), name='car_delete'),     # URL for deleting car by pk
 ]
 ```
 #
