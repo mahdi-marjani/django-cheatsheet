@@ -790,7 +790,7 @@ from rest_framework.generics import (
 from .models import Car
 from .serializers import CarSerializer
 
-class CarCreateList(ListCreateAPIView):
+class CarCreateList(ListCreateAPIView):    # Handles both listing all Cars and creating a new one
     serializer_class = CarSerializer
     queryset = Car.objects.all()
 ```
@@ -801,8 +801,7 @@ from . import views
 
 app_name = 'home'
 urlpatterns = [
-    path('', views.Home.as_view()),
-    path('car/', views.CarCreateList.as_view()),
+    path('car/', views.CarCreateList.as_view()),    # (GET) list all cars | (POST) create new car
 ]
 ```
 #
