@@ -12,6 +12,7 @@
 - [LogoutView](#LogoutView)
 - [MonthArchiveView (show data by date)](#MonthArchiveView-show-data-by-date)
 - [ListAPIView & RetrieveAPIView](#listapiview--retrieveapiview)
+- [DestroyAPIView](#DestroyAPIView)
 
 ### View:
 views.py:
@@ -677,6 +678,33 @@ urlpatterns = [
     path('', views.Home.as_view()),                     # list all cars
     # path('<int:pk>/', views.SingleCar.as_view()),     # retrieve one car by ID (e.g. /3/)
     path('<str:name>/', views.SingleCar.as_view()),     # retrieve one car by name (e.g. /BMW/)
+]
+```
+#
+### DestroyAPIView:
+views.py:
+```python
+from rest_framework.generics import (
+    DestroyAPIView
+)
+from .models import Car
+from .serializers import CarSerializer
+
+class CarDelete(DestroyAPIView):             # Send a DELETE request to delete a Car instance by name
+    serializer_class = CarSerializer
+    queryset = Car.objects.all()
+    lookup_field = 'name'                    # identify the Car by its 'name' field
+    lookup_url_kwarg = 'car_name'            # match URL param <car_name> to Car.name
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    # path('<int:pk>/', views.CarDelete.as_view())        # delete car by id (e.g. /3/) (method: DELETE)
+    path('<str:car_name>/', views.CarDelete.as_view())    # alternative: delete by name (e.g. /BMW/) (method: DELETE)
 ]
 ```
 #
