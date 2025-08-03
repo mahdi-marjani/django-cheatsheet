@@ -10,6 +10,7 @@
 - [UpdateView](#UpdateView)
 - [LoginView](#LoginView)
 - [LogoutView](#LogoutView)
+- [MonthArchiveView (show data by date)](#LogoutView-show-data-by-date)
 
 ### View:
 views.py:
@@ -558,6 +559,69 @@ app_name = 'accounts'
 urlpatterns = [
     path('login/', views.UserLogin.as_view(), name='login'),
     path('logout/', views.UserLogout.as_view(), name='logout'),     # URL for user logout
+]
+```
+#
+### MonthArchiveView (show data by date):
+models.py:
+```python
+from django.db import models
+
+class Car(models.Model):
+    name = models.CharField(max_length=100)
+    owner = models.CharField(max_length=100)
+    year = models.PositiveSmallIntegerField()
+    created = models.DateField(null=True, blank=True)    # date field
+
+    def __str__(self):
+        return self.name
+```
+views.py:
+```python
+from .models import Car
+from django.views.generic import MonthArchiveView
+
+class MonthCar(MonthArchiveView):
+    model = Car                                        # model to fetch data from
+    date_field = 'created'                             # filter data by 'created' date
+    template_name = 'home/home.html'                   # template to show results
+    context_object_name = 'cars'                       # context variable for loop in template
+    # month_format = '%m'                              # optional: if you want numeric months (e.g. 01 for Jan)
+```
+home.html:
+```html
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h2>Home</h2>
+
+    {% for car in cars %}            {# loop through cars created in the given month #}
+        <p>
+            {{ car.name }}
+        </p>
+    {% endfor %}
+
+{% endblock %}
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    # path(                                # if using numeric month (01, 02, ...)
+    #     '<int:year>/<int:month>/',
+    #     views.MonthCar.as_view(),
+    #     name='home'
+    # ),
+    path(                                  # URL includes year and month name (e.g. /2024/jun/)
+        '<int:year>/<str:month>/',
+        views.MonthCar.as_view(),
+        name='home'
+    ),
+    
 ]
 ```
 #
