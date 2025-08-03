@@ -1,27 +1,15 @@
 from rest_framework.generics import (
-    ListAPIView, DestroyAPIView, CreateAPIView, UpdateAPIView, ListCreateAPIView
+    GenericAPIView
 )
 from .models import Car
 from .serializers import CarSerializer
+from rest_framework.response import Response
 
-class Home(ListAPIView):
+class Home(GenericAPIView):
     serializer_class = CarSerializer
     queryset = Car.objects.all()
 
-class CarDelete(DestroyAPIView):
-    serializer_class = CarSerializer
-    queryset = Car.objects.all()
-    lookup_field = 'name'
-    lookup_url_kwarg = 'car_name'
-
-class CarCreate(CreateAPIView):
-    serializer_class = CarSerializer
-    queryset = Car.objects.all()
-
-class CarUpdate(UpdateAPIView):
-    serializer_class = CarSerializer
-    queryset = Car.objects.all()
-
-class CarCreateList(ListCreateAPIView):
-    serializer_class = CarSerializer
-    queryset = Car.objects.all()
+    def get(self, request, *args, **kwargs):
+        instance = self.get_object()
+        ser_data = self.get_serializer(instance).data
+        return Response(ser_data)
