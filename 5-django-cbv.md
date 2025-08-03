@@ -11,6 +11,7 @@
 - [LoginView](#LoginView)
 - [LogoutView](#LogoutView)
 - [MonthArchiveView (show data by date)](#MonthArchiveView-show-data-by-date)
+- [ListAPIView & RetrieveAPIView](#ListAPIView-&-RetrieveAPIView)
 
 ### View:
 views.py:
@@ -622,6 +623,60 @@ urlpatterns = [
         name='home'
     ),
     
+]
+```
+#
+### ListAPIView & RetrieveAPIView:
+models.py:
+```python
+from django.db import models
+
+class Car(models.Model):
+    name = models.CharField(max_length=100)
+    owner = models.CharField(max_length=100)
+    year = models.PositiveSmallIntegerField()
+
+    def __str__(self):
+        return self.name
+```
+serializers.py:
+```python
+from rest_framework import serializers
+from .models import Car
+
+class CarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Car
+        fields = '__all__'
+```
+views.py:
+```python
+from rest_framework.generics import (
+    ListAPIView, RetrieveAPIView
+)
+from .models import Car
+from .serializers import CarSerializer
+
+
+class Home(ListAPIView):
+    serializer_class = CarSerializer
+    queryset = Car.objects.all()
+
+class SingleCar(RetrieveAPIView):
+    serializer_class = CarSerializer
+    queryset = Car.objects.all()
+    lookup_field = 'name'
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    path('', views.Home.as_view()),
+    # path('<int:pk>/', views.SingleCar.as_view())
+    path('<str:name>/', views.SingleCar.as_view())
 ]
 ```
 #
