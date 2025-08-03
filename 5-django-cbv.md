@@ -16,6 +16,7 @@
 - [CreateAPIView](#CreateAPIView)
 - [UpdateAPIView](#UpdateAPIView)
 - [ListCreateAPIView](#ListCreateAPIView)
+- [GenericAPIView](#GenericAPIView)
 
 ### View:
 views.py:
@@ -802,6 +803,36 @@ from . import views
 app_name = 'home'
 urlpatterns = [
     path('car/', views.CarCreateList.as_view()),    # (GET) list all cars | (POST) create new car
+]
+```
+#
+### GenericAPIView:
+views.py:
+```python
+from rest_framework.generics import (
+    GenericAPIView
+)
+from .models import Car
+from .serializers import CarSerializer
+from rest_framework.response import Response
+
+class Home(GenericAPIView):
+    serializer_class = CarSerializer
+    queryset = Car.objects.all()
+
+    def get(self, request, *args, **kwargs):                # handle GET request manually
+        instance = self.get_object()
+        ser_data = self.get_serializer(instance).data
+        return Response(ser_data)
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    path('<int:pk>/', views.Home.as_view()),    # retrieve one car by id (e.g. /3/) (method: GET)
 ]
 ```
 #
