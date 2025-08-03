@@ -15,6 +15,7 @@
 - [DestroyAPIView](#DestroyAPIView)
 - [CreateAPIView](#CreateAPIView)
 - [UpdateAPIView](#UpdateAPIView)
+- [ListCreateAPIView](#ListCreateAPIView)
 
 ### View:
 views.py:
@@ -777,6 +778,31 @@ urlpatterns = [
     path('update/<int:pk>/', views.CarUpdate.as_view()),    # URL to update a car by its ID
                                                             # PUT → must send all fields (full update)
                                                             # PATCH → only send fields you want to change (partial update)
+]
+```
+#
+### ListCreateAPIView:
+views.py:
+```python
+from rest_framework.generics import (
+    ListCreateAPIView
+)
+from .models import Car
+from .serializers import CarSerializer
+
+class CarCreateList(ListCreateAPIView):
+    serializer_class = CarSerializer
+    queryset = Car.objects.all()
+```
+urls.py:
+```python
+from django.urls import path
+from . import views
+
+app_name = 'home'
+urlpatterns = [
+    path('', views.Home.as_view()),
+    path('car/', views.CarCreateList.as_view()),
 ]
 ```
 #
