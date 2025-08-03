@@ -518,6 +518,8 @@ from django.contrib.auth import views as auth_views
 class UserLogin(auth_views.LoginView):
     template_name = 'accounts/login.html'                # template contains login form
     next_page = reverse_lazy('home:home')                # redirect after successful login
+
+    # Instead of setting next_page here, you can define LOGIN_REDIRECT_URL in settings.py
 ```
 login.html:
 ```html
@@ -556,6 +558,8 @@ class UserLogin(auth_views.LoginView):
 
 class UserLogout(auth_views.LogoutView):
     next_page = reverse_lazy('home:home')                # redirect after successful logout
+
+    # Instead of setting next_page here, you can define LOGOUT_REDIRECT_URL in settings.py
 ```
 urls.py:
 ```python
