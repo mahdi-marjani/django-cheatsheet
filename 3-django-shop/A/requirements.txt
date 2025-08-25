@@ -5,3 +5,5 @@ django-storages==1.14.6
 Pillow==11.3.0
 django-celery-beat==2.8.1
 psycopg2==2.9.10
+django-ckeditor==6.7.3
+requests==2.32.5
